@@ -35,9 +35,9 @@ const tableData = [
           <el-table-column label="操作" min-width="140">
             <template #default>
               <div class="flex items-center gap-3">
-                <el-link type="primary" :underline="false">查看问卷</el-link>
-                <el-link type="warning" :underline="false">编辑</el-link>
-                <el-link type="danger" :underline="false">删除</el-link>
+                <el-link type="primary" underline="never">查看问卷</el-link>
+                <el-link type="warning" underline="never">编辑</el-link>
+                <el-link type="danger" underline="never">删除</el-link>
               </div>
             </template>
           </el-table-column>
