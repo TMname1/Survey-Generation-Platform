@@ -4,7 +4,7 @@ const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      path: '/materials',
+      path: '/editorMaterials',
       name: 'materials',
       component: () => import('@/views/materials/IndexView.vue'),
       children: [
@@ -44,6 +44,11 @@ const router = createRouter({
       path: '/editor',
       name: 'editor',
       component: () => import('@/views/EditorView.vue'),
+    },
+    {
+      path: '/myMaterials',
+      name: 'my-materials',
+      component: () => import('@/views/materials/myMaterialsView.vue'),
     },
     {
       path: '/',

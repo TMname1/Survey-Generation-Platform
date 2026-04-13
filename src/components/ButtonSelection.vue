@@ -19,7 +19,7 @@ const handleClick = (item: { id: string; name: string }) => {
 
 onMounted(() => {
   if (props.data && props.data.length > 0) {
-    handleClick(props.data[0]);
+    handleClick(props.data[0]!);
   }
 });
 </script>
