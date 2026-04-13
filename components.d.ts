@@ -11,15 +11,29 @@ export {};
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
+    BoldSetting: typeof import('./src/components/materials/BoldSetting.vue')['default']
     ButtonItem: typeof import('./src/components/ButtonItem.vue')['default']
     ButtonSelection: typeof import('./src/components/ButtonSelection.vue')['default']
+    CenterSetting: typeof import('./src/components/materials/CenterSetting.vue')['default']
+    ColorSetting: typeof import('./src/components/materials/ColorSetting.vue')['default']
+    DropdownChoice: typeof import('./src/components/buttonItem/DropdownChoice.vue')['default']
     ElAvatar: typeof import('element-plus/es')['ElAvatar']
     ElButton: typeof import('element-plus/es')['ElButton']
     ElIcon: typeof import('element-plus/es')['ElIcon']
     ElLink: typeof import('element-plus/es')['ElLink']
+    ElRadio: typeof import('element-plus/es')['ElRadio']
+    ElRadioGroup: typeof import('element-plus/es')['ElRadioGroup']
+    ElRadior: typeof import('element-plus/es')['ElRadior']
     ElTable: typeof import('element-plus/es')['ElTable']
     ElTableColumn: typeof import('element-plus/es')['ElTableColumn']
+    ImageSingleChoice: typeof import('./src/components/buttonItem/ImageSingleChoice.vue')['default']
+    ItalicSetting: typeof import('./src/components/materials/ItalicSetting.vue')['default']
+    MultipleChoice: typeof import('./src/components/buttonItem/MultipleChoice.vue')['default']
+    MutileSecltion: typeof import('./src/components/buttonItem/MutileSecltion.vue')['default']
+    RadioOption: typeof import('./src/components/materials/RadioOption.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    SingleChoice: typeof import('./src/components/buttonItem/SingleChoice.vue')['default']
+    SizeSetting: typeof import('./src/components/materials/SizeSetting.vue')['default']
   }
 }

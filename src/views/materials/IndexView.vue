@@ -1,6 +1,30 @@
 <script lang="ts" setup>
+import { provide, shallowRef } from 'vue';
 import router from '@/router/index.ts';
 import { ArrowLeft, Select, Edit, Setting, Document, User, Phone } from '@element-plus/icons-vue';
+
+// Import components
+import SingleChoice from '@/components/buttonItem/SingleChoice.vue';
+import MultipleChoice from '@/components/buttonItem/MultipleChoice.vue';
+import DropdownChoice from '@/components/buttonItem/DropdownChoice.vue';
+import ImageSingleChoice from '@/components/buttonItem/ImageSingleChoice.vue';
+
+const activeComponent = shallowRef<unknown>(null);
+
+provide('activeComponent', {
+  setComponent: (cmp: unknown) => {
+    activeComponent.value = cmp;
+  },
+});
+
+const componentMap: Record<string, unknown> = {
+  单选题: SingleChoice,
+  多选题: MultipleChoice,
+  下拉选择: DropdownChoice,
+  图片单选题: ImageSingleChoice,
+};
+
+provide('componentMap', componentMap);
 
 const navItems = [
   { label: '选择', icon: Select, path: '/materials/selection' },
@@ -18,7 +42,7 @@ const colors = ['primary', 'success', 'warning', 'danger'];
   <div class="box-border flex min-h-screen flex-col">
     <nav class="mb-5 flex items-center justify-between border border-gray-300">
       <div class="flex items-center justify-center border-r border-gray-300 p-5">
-        <el-button :icon="ArrowLeft" circle @click="router.back()" />
+        <el-button :icon="ArrowLeft" circle @click="router.push('/')" />
       </div>
       <div class="border-l border-gray-300 p-5">
         <el-avatar
@@ -31,7 +55,7 @@ const colors = ['primary', 'success', 'warning', 'danger'];
 
     <h1 class="mb-5 text-center text-[28px] font-bold text-[#1f2329]">组件市场</h1>
 
-    <main class="mx-auto flex w-[70vw] flex-row items-start justify-center">
+    <main class="mx-auto flex w-[80vw] flex-row items-start justify-center">
       <aside class="z-10 mr-0 flex translate-x-px flex-col gap-4">
         <router-link
           v-for="(item, index) in navItems"
@@ -52,7 +76,9 @@ const colors = ['primary', 'success', 'warning', 'danger'];
         <div class="flex-1 border-r border-gray-300 p-6">
           <router-view></router-view>
         </div>
-        <div class="flex-2 border-r border-gray-300 p-6">显示对应的业务组件</div>
+        <div class="flex-2 border-r border-gray-300 p-6">
+          <component v-if="activeComponent" :is="activeComponent" />
+        </div>
         <div class="flex-1 p-6">编辑面版</div>
       </section>
     </main>
