@@ -1,10 +1,8 @@
 <script lang="ts" setup>
 import ButtonSelection from '@/components/ButtonSelection.vue';
 const btnData = [
-  { id: '1', name: '测试1' },
-  { id: '2', name: '测试2' },
-  { id: '3', name: '测试3' },
-  { id: '4', name: '测试4' },
+  { id: '评价', name: '评价' },
+  { id: '日期', name: '日期' },
 ];
 </script>
 
