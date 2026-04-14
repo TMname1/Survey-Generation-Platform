@@ -10,7 +10,6 @@ import { useDropdownChoiceStore } from '@/stores/choice/dropdownChoice';
 import SingleChoice from '@/components/choice/SingleChoice.vue';
 import MultipleChoice from '@/components/choice/MultipleChoice.vue';
 import DropdownChoice from '@/components/choice/DropdownChoice.vue';
-import ImageSingleChoice from '@/components/choice/ImageSingleChoice.vue';
 
 // Import materials components
 import BoldSetting from '@/components/editor/BoldSetting.vue';
