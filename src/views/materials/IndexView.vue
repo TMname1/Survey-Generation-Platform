@@ -5,11 +5,15 @@ import { ArrowLeft, Select, Edit, Setting, Document, User, Phone } from '@elemen
 import { useSingleChoiceStore } from '@/stores/choice/singleChoice';
 import { useMultipleChoiceStore } from '@/stores/choice/multipleChoice';
 import { useDropdownChoiceStore } from '@/stores/choice/dropdownChoice';
+import { useRateStore } from '@/stores/advanced/rate';
+import { useDateStore } from '@/stores/advanced/date';
 
 // Import components
 import SingleChoice from '@/components/choice/SingleChoice.vue';
 import MultipleChoice from '@/components/choice/MultipleChoice.vue';
 import DropdownChoice from '@/components/choice/DropdownChoice.vue';
+import RateComponent from '@/components/advanced/RateComponent.vue';
+import DateComponent from '@/components/advanced/DateComponent.vue';
 
 // Import materials components
 import BoldSetting from '@/components/editor/BoldSetting.vue';
@@ -39,6 +43,8 @@ const componentMap: Record<string, unknown> = {
   单选题: SingleChoice,
   多选题: MultipleChoice,
   下拉选择题: DropdownChoice,
+  评价: RateComponent,
+  日期: DateComponent,
   // TODO:
   // 图片单选题: ImageSingleChoice,
   // 图片多选题: ....
@@ -60,6 +66,8 @@ const colors = ['primary', 'success', 'warning', 'danger'];
 const singleChoiceStore = useSingleChoiceStore();
 const multipleChoiceStore = useMultipleChoiceStore();
 const dropdownChoiceStore = useDropdownChoiceStore();
+const rateStore = useRateStore();
+const dateStore = useDateStore();
 
 const activeStore = computed(() => {
   if (activeComponentName.value === '多选题') {
@@ -67,6 +75,12 @@ const activeStore = computed(() => {
   }
   if (activeComponentName.value === '下拉选择题') {
     return dropdownChoiceStore;
+  }
+  if (activeComponentName.value === '评价') {
+    return rateStore;
+  }
+  if (activeComponentName.value === '日期') {
+    return dateStore;
   }
   // 默认为单选题或单选题 store
   return singleChoiceStore;

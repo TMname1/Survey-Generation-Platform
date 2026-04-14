@@ -1,8 +1,8 @@
 # PROJECT KNOWLEDGE BASE
 
-**Generated:** 2026-04-12
-**Commit:** Unknown
-**Branch:** Unknown
+**Generated:** 2026-04-14
+**Commit:** ee17304
+**Branch:** main
 
 ## OVERVIEW
 
@@ -14,6 +14,7 @@ Frontend Vue 3 SPA built with Vite, TypeScript, Pinia, Vue Router, Tailwind CSS,
 ./
 ├── src/           # Application source code
 │   ├── assets/    # Static assets (base.css)
+│   ├── components/ # Reusable UI components
 │   ├── router/    # Vue Router configuration
 │   ├── stores/    # Pinia state stores
 │   └── views/     # Route components (lazy-loaded)
@@ -65,4 +66,3 @@ pnpm lint:oxlint
 ## NOTES
 
 - No server-side or backend entry exists in this repo.
-- The `src/components` directory does not exist yet (not inherently an issue, just a project state observation).
