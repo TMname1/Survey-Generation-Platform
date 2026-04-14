@@ -1,39 +1,48 @@
 <script lang="ts" setup>
-import { provide, shallowRef } from 'vue';
+import { provide, shallowRef, ref, computed } from 'vue';
 import router from '@/router/index.ts';
 import { ArrowLeft, Select, Edit, Setting, Document, User, Phone } from '@element-plus/icons-vue';
+import { useSingleChoiceStore } from '@/stores/choice/singleChoice';
+import { useMultipleChoiceStore } from '@/stores/choice/multipleChoice';
+import { useDropdownChoiceStore } from '@/stores/choice/dropdownChoice';
 
 // Import components
-import SingleChoice from '@/components/buttonItem/SingleChoice.vue';
-import MultipleChoice from '@/components/buttonItem/MultipleChoice.vue';
-import DropdownChoice from '@/components/buttonItem/DropdownChoice.vue';
-import ImageSingleChoice from '@/components/buttonItem/ImageSingleChoice.vue';
+import SingleChoice from '@/components/choice/SingleChoice.vue';
+import MultipleChoice from '@/components/choice/MultipleChoice.vue';
+import DropdownChoice from '@/components/choice/DropdownChoice.vue';
+import ImageSingleChoice from '@/components/choice/ImageSingleChoice.vue';
 
 // Import materials components
-import BoldSetting from '@/components/materials/BoldSetting.vue';
-import CenterSetting from '@/components/materials/CenterSetting.vue';
-import ColorSetting from '@/components/materials/ColorSetting.vue';
-import ItalicSetting from '@/components/materials/ItalicSetting.vue';
-import RadioOption from '@/components/materials/RadioOption.vue';
-import SizeSetting from '@/components/materials/SizeSetting.vue';
+import BoldSetting from '@/components/editor/BoldSetting.vue';
+import CenterSetting from '@/components/editor/CenterSetting.vue';
+import ColorSetting from '@/components/editor/ColorSetting.vue';
+import ItalicSetting from '@/components/editor/ItalicSetting.vue';
+import RadioOption from '@/components/editor/RadioOption.vue';
+import SizeSetting from '@/components/editor/SizeSetting.vue';
 
 // Local materials components
 import TitleSetting from './TitleSetting.vue';
 import DescSetting from './DescSetting.vue';
 
 const activeComponent = shallowRef<unknown>(null);
+const activeComponentName = ref<string>('');
 
 provide('activeComponent', {
-  setComponent: (cmp: unknown) => {
+  setComponent: (cmp: unknown, name?: string) => {
     activeComponent.value = cmp;
+    if (name) {
+      activeComponentName.value = name;
+    }
   },
 });
 
 const componentMap: Record<string, unknown> = {
   单选题: SingleChoice,
   多选题: MultipleChoice,
-  下拉选择: DropdownChoice,
-  图片单选题: ImageSingleChoice,
+  下拉选择题: DropdownChoice,
+  // TODO:
+  // 图片单选题: ImageSingleChoice,
+  // 图片多选题: ....
 };
 
 provide('componentMap', componentMap);
@@ -48,6 +57,34 @@ const navItems = [
 ];
 
 const colors = ['primary', 'success', 'warning', 'danger'];
+
+const singleChoiceStore = useSingleChoiceStore();
+const multipleChoiceStore = useMultipleChoiceStore();
+const dropdownChoiceStore = useDropdownChoiceStore();
+
+const activeStore = computed(() => {
+  if (activeComponentName.value === '多选题') {
+    return multipleChoiceStore;
+  }
+  if (activeComponentName.value === '下拉选择题') {
+    return dropdownChoiceStore;
+  }
+  // 默认为单选题或单选题 store
+  return singleChoiceStore;
+});
+
+provide('activeStore', activeStore);
+
+const editComponentsMap: Record<string, unknown> = {
+  TitleSetting,
+  DescSetting,
+  RadioOption,
+  SizeSetting,
+  ColorSetting,
+  BoldSetting,
+  ItalicSetting,
+  CenterSetting,
+};
 </script>
 
 <template>
@@ -94,14 +131,11 @@ const colors = ['primary', 'success', 'warning', 'danger'];
         <div class="flex-1.5 overflow-y-auto p-6">
           <h2 class="mb-4 text-lg font-bold">编辑面板</h2>
           <div class="flex flex-col gap-3">
-            <TitleSetting />
-            <DescSetting />
-            <RadioOption />
-            <SizeSetting />
-            <ColorSetting />
-            <BoldSetting />
-            <ItalicSetting />
-            <CenterSetting />
+            <component
+              v-for="cmpName in activeStore.editComponents"
+              :key="cmpName"
+              :is="editComponentsMap[cmpName]"
+            />
           </div>
         </div>
       </section>

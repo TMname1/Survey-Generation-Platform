@@ -6,6 +6,7 @@ const router = createRouter({
     {
       path: '/editorMaterials',
       name: 'materials',
+      redirect: '/editorMaterials/selection',
       component: () => import('@/views/materials/IndexView.vue'),
       children: [
         {

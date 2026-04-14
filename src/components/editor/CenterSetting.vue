@@ -1,16 +1,17 @@
 <script setup lang="ts">
-import { useSingleChoiceStore } from '@/stores/singleChoice';
-import { storeToRefs } from 'pinia';
+import { inject, type Ref } from 'vue';
+import type { useSingleChoiceStore } from '@/stores/choice/singleChoice';
 
-const store = useSingleChoiceStore();
-const { position } = storeToRefs(store);
+type ActiveStore = ReturnType<typeof useSingleChoiceStore>;
+
+const store = inject<Ref<ActiveStore>>('activeStore')!;
 </script>
 
 <template>
   <div class="flex items-center justify-start gap-4">
     <div class="text-[14px] text-[#606266]">对齐方式</div>
-    <div class="w-12 text-[12px] text-[#909399]" v-if="position">{{ position }}</div>
-    <el-radio-group v-model="position">
+    <div class="w-12 text-[12px] text-[#909399]" v-if="store.position">{{ store.position }}</div>
+    <el-radio-group v-model="store.position">
       <el-radio-button value="左对齐" label="左对齐">
         <div class="h-4 w-4"><img src="@/assets/svg/align-left.svg" alt="左对齐" /></div>
       </el-radio-button>

@@ -5,7 +5,9 @@ const props = defineProps({
   data: { type: Array<{ id: string; name: string }>, required: true },
 });
 
-const activeComponentContext = inject<{ setComponent: (cmp: unknown) => void }>('activeComponent');
+const activeComponentContext = inject<{ setComponent: (cmp: unknown, name?: string) => void }>(
+  'activeComponent',
+);
 const componentMap = inject<Record<string, unknown>>('componentMap');
 
 const activeId = ref<string>('');
@@ -13,7 +15,7 @@ const activeId = ref<string>('');
 const handleClick = (item: { id: string; name: string }) => {
   activeId.value = item.id;
   if (activeComponentContext && componentMap && componentMap[item.name]) {
-    activeComponentContext.setComponent(componentMap[item.name]);
+    activeComponentContext.setComponent(componentMap[item.name], item.name);
   }
 };
 

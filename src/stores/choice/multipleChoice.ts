@@ -1,9 +1,19 @@
 import { ref } from 'vue';
 import { defineStore } from 'pinia';
 
-export const useSingleChoiceStore = defineStore('singleChoice', () => {
-  const title = ref('单选题默认标题');
-  const desc = ref('单选题默认描述');
+export const useMultipleChoiceStore = defineStore('multipleChoice', () => {
+  const editComponents = ref([
+    'TitleSetting',
+    'DescSetting',
+    'RadioOption',
+    'SizeSetting',
+    'ColorSetting',
+    'BoldSetting',
+    'ItalicSetting',
+    'CenterSetting',
+  ]);
+  const title = ref('多选题默认标题');
+  const desc = ref('多选题默认描述');
   const options = ref(['默认选项1', '默认选项2', '默认选项3']);
 
   const position = ref<'左对齐' | '居中对齐'>('左对齐');
@@ -17,6 +27,7 @@ export const useSingleChoiceStore = defineStore('singleChoice', () => {
   const descColor = ref('#909399');
 
   return {
+    editComponents,
     title,
     desc,
     options,

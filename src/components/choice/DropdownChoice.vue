@@ -1,8 +1,9 @@
 <script lang="ts" setup>
-import { computed } from 'vue';
-import { useSingleChoiceStore } from '@/stores/singleChoice';
+import { computed, ref } from 'vue';
+import { useDropdownChoiceStore } from '@/stores/choice/dropdownChoice';
+import { ArrowDown } from '@element-plus/icons-vue';
 
-const store = useSingleChoiceStore();
+const store = useDropdownChoiceStore();
 
 const containerStyle = computed(() => ({
   textAlign: store.position === '居中对齐' ? ('center' as const) : ('left' as const),
@@ -20,16 +21,29 @@ const descStyle = computed(() => ({
   fontWeight: store.descWeight === '加粗' ? 'bold' : 'normal',
   color: store.descColor,
 }));
+
+const stageVal = ref('');
+
+const handleCommand = (command: string) => {
+  stageVal.value = command;
+};
 </script>
 <template>
   <div :style="containerStyle">
     <h1 class="mb-5" :style="titleStyle">{{ store.title }}</h1>
     <p class="mb-5" :style="descStyle">{{ store.desc }}</p>
-    <!-- TODO: https://element-plus.org/zh-CN/component/radio#%E5%8D%95%E9%80%89%E6%A1%86%E7%BB%84 -->
-    <el-radio-group>
-      <el-radio v-for="(opt, index) in store.options" :key="index" :label="opt" :value="opt">{{
-        opt
-      }}</el-radio>
-    </el-radio-group>
+    <el-dropdown @command="handleCommand">
+      <el-button>
+        {{ stageVal || '请选择选项' }}
+        <el-icon class="el-icon--right"><ArrowDown /></el-icon>
+      </el-button>
+      <template #dropdown>
+        <el-dropdown-menu>
+          <el-dropdown-item v-for="(opt, index) in store.options" :key="index" :command="opt">
+            {{ opt }}
+          </el-dropdown-item>
+        </el-dropdown-menu>
+      </template>
+    </el-dropdown>
   </div>
 </template>
