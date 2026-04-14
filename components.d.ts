@@ -22,6 +22,7 @@ declare module 'vue' {
     ElCheckbox: typeof import('element-plus/es')['ElCheckbox']
     ElCheckboxGroup: typeof import('element-plus/es')['ElCheckboxGroup']
     ElColorPicker: typeof import('element-plus/es')['ElColorPicker']
+    ElConfigProvider: typeof import('element-plus/es')['ElConfigProvider']
     ElDatePicker: typeof import('element-plus/es')['ElDatePicker']
     ElDropdown: typeof import('element-plus/es')['ElDropdown']
     ElDropdownItem: typeof import('element-plus/es')['ElDropdownItem']
@@ -44,5 +45,7 @@ declare module 'vue' {
     RouterView: typeof import('vue-router')['RouterView']
     SingleChoice: typeof import('./src/components/choice/SingleChoice.vue')['default']
     SizeSetting: typeof import('./src/components/editor/SizeSetting.vue')['default']
+    TextInput: typeof import('./src/components/input/textInput.vue')['default']
+    TextStyle: typeof import('./src/components/editor/textStyle.vue')['default']
   }
 }

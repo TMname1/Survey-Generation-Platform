@@ -8,12 +8,15 @@ import { useDropdownChoiceStore } from '@/stores/choice/dropdownChoice';
 import { useRateStore } from '@/stores/advanced/rate';
 import { useDateStore } from '@/stores/advanced/date';
 
+import { useTextInputStore } from '@/stores/input/textInput';
+
 // Import components
 import SingleChoice from '@/components/choice/SingleChoice.vue';
 import MultipleChoice from '@/components/choice/MultipleChoice.vue';
 import DropdownChoice from '@/components/choice/DropdownChoice.vue';
 import RateComponent from '@/components/advanced/RateComponent.vue';
 import DateComponent from '@/components/advanced/DateComponent.vue';
+import TextInput from '@/components/input/textInput.vue';
 
 // Import materials components
 import BoldSetting from '@/components/editor/BoldSetting.vue';
@@ -22,6 +25,7 @@ import ColorSetting from '@/components/editor/ColorSetting.vue';
 import ItalicSetting from '@/components/editor/ItalicSetting.vue';
 import RadioOption from '@/components/editor/RadioOption.vue';
 import SizeSetting from '@/components/editor/SizeSetting.vue';
+import TextStyle from '@/components/editor/textStyle.vue';
 
 // Local materials components
 import TitleSetting from './TitleSetting.vue';
@@ -45,7 +49,8 @@ const componentMap: Record<string, unknown> = {
   下拉选择题: DropdownChoice,
   评价: RateComponent,
   日期: DateComponent,
-  // TODO:
+  文本输入: TextInput,
+  // TODO: 完成后面
   // 图片单选题: ImageSingleChoice,
   // 图片多选题: ....
 };
@@ -56,6 +61,7 @@ const navItems = [
   { label: '选择', icon: Select, path: { name: 'materials-selection' } },
   { label: '文本输入', icon: Edit, path: { name: 'materials-text-input' } },
   { label: '高级题型', icon: Setting, path: { name: 'materials-advanced' } },
+  // TODO: 完成后面
   { label: '备注说明', icon: Document, path: { name: 'materials-remarks' } },
   { label: '个人信息', icon: User, path: { name: 'materials-personal-info' } },
   { label: '联系方式', icon: Phone, path: { name: 'materials-contact' } },
@@ -68,6 +74,7 @@ const multipleChoiceStore = useMultipleChoiceStore();
 const dropdownChoiceStore = useDropdownChoiceStore();
 const rateStore = useRateStore();
 const dateStore = useDateStore();
+const textInputStore = useTextInputStore();
 
 const activeStore = computed(() => {
   if (activeComponentName.value === '多选题') {
@@ -82,6 +89,9 @@ const activeStore = computed(() => {
   if (activeComponentName.value === '日期') {
     return dateStore;
   }
+  if (activeComponentName.value === '文本输入') {
+    return textInputStore;
+  }
   // 默认为单选题或单选题 store
   return singleChoiceStore;
 });
@@ -89,6 +99,7 @@ const activeStore = computed(() => {
 provide('activeStore', activeStore);
 
 const editComponentsMap: Record<string, unknown> = {
+  textStyle: TextStyle,
   TitleSetting,
   DescSetting,
   RadioOption,
@@ -108,9 +119,9 @@ const editComponentsMap: Record<string, unknown> = {
       </div>
       <div class="border-l border-gray-300 p-5">
         <el-avatar
-          class="border-2 border-white shadow-[0_4px_12px_rgba(0,0,0,0.12)]"
+          class="border-2 border-white shadow-[0_4px_12px_rgba(0,0,0,0.12)] transition-transform duration-500 hover:rotate-360"
           :size="42"
-          src="https://uapis.cn/assets/acg/pc/0072Vf1pgy1foxkjbqfwjj31hc0u0000.jpg"
+          src="https://avatars.githubusercontent.com/u/84985340"
         />
       </div>
     </nav>

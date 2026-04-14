@@ -1,8 +1,9 @@
 <script lang="ts" setup>
-import { computed, ref } from 'vue';
-import { useRateStore } from '@/stores/advanced/rate';
+import { computed } from 'vue';
+import { useTextInputStore } from '@/stores/input/textInput';
+import { ref } from 'vue';
 
-const store = useRateStore();
+const store = useTextInputStore();
 
 const containerStyle = computed(() => ({
   textAlign: store.position === '居中对齐' ? ('center' as const) : ('left' as const),
@@ -21,13 +22,18 @@ const descStyle = computed(() => ({
   color: store.descColor,
 }));
 
-const rateVal = ref(0);
+const inputVal = ref('');
 </script>
 
 <template>
   <div :style="containerStyle">
     <h1 class="mb-5" :style="titleStyle">{{ store.title }}</h1>
     <p class="mb-5" :style="descStyle">{{ store.desc }}</p>
-    <el-rate v-model="rateVal" allow-half />
+    <el-input
+      v-model="inputVal"
+      :type="store.style === '多行文本' ? 'textarea' : 'text'"
+      placeholder="请输入内容"
+      :rows="store.style === '多行文本' ? 4 : undefined"
+    />
   </div>
 </template>
