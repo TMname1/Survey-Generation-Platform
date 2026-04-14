@@ -24,9 +24,6 @@ const tableData = [
         <el-button type="success" :icon="Edit" @click="router.push('/editorMaterials')">
           自定义组件
         </el-button>
-        <el-button type="warning" :icon="Edit" @click="router.push('/myMaterials')">
-          我的组件
-        </el-button>
       </div>
 
       <div class="w-full overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-slate-200">

@@ -47,11 +47,6 @@ const router = createRouter({
       component: () => import('@/views/EditorView.vue'),
     },
     {
-      path: '/myMaterials',
-      name: 'my-materials',
-      component: () => import('@/views/materials/myMaterialsView.vue'),
-    },
-    {
       path: '/',
       name: 'home',
       component: () => import('@/views/HomeView.vue'),

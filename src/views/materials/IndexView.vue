@@ -3,6 +3,7 @@ import { provide, shallowRef, ref, computed } from 'vue';
 import router from '@/router/index.ts';
 import { ArrowLeft, Select, Edit, Setting, Document, User, Phone } from '@element-plus/icons-vue';
 import { useSingleChoiceStore } from '@/stores/choice/singleChoice';
+// import { useDataStore } from '@/stores/index.ts';
 import { useMultipleChoiceStore } from '@/stores/choice/multipleChoice';
 import { useDropdownChoiceStore } from '@/stores/choice/dropdownChoice';
 import { useRateStore } from '@/stores/advanced/rate';
@@ -69,6 +70,9 @@ const navItems = [
 
 const colors = ['primary', 'success', 'warning', 'danger'];
 
+// const singleChoiceStore = useDataStore().createSingleChoiceStore();
+// console.log(singleChoiceStore);
+
 const singleChoiceStore = useSingleChoiceStore();
 const multipleChoiceStore = useMultipleChoiceStore();
 const dropdownChoiceStore = useDropdownChoiceStore();
@@ -113,11 +117,11 @@ const editComponentsMap: Record<string, unknown> = {
 
 <template>
   <div class="box-border flex min-h-screen flex-col">
-    <nav class="mb-5 flex items-center justify-between border border-gray-300">
-      <div class="flex items-center justify-center border-r border-gray-300 p-5">
-        <el-button :icon="ArrowLeft" circle @click="router.push('/')" />
+    <nav class="mb-10 flex h-16 items-center justify-between border border-gray-300">
+      <div class="flex h-full w-16 items-center justify-center border-r border-gray-300">
+        <el-button class="h-10! w-10!" :icon="ArrowLeft" circle @click="router.push('/')" />
       </div>
-      <div class="border-l border-gray-300 p-5">
+      <div class="flex h-full w-16 items-center justify-center border-l border-gray-300">
         <el-avatar
           class="border-2 border-white shadow-[0_4px_12px_rgba(0,0,0,0.12)] transition-transform duration-500 hover:rotate-360"
           :size="42"
@@ -125,8 +129,6 @@ const editComponentsMap: Record<string, unknown> = {
         />
       </div>
     </nav>
-
-    <h1 class="mb-5 text-center text-[28px] font-bold text-[#1f2329]">组件市场</h1>
 
     <main class="mx-auto flex w-[90vw] flex-row items-start justify-center">
       <aside class="z-10 mr-0 flex translate-x-px flex-col gap-4">
@@ -143,7 +145,7 @@ const editComponentsMap: Record<string, unknown> = {
         </router-link>
       </aside>
       <section
-        class="flex aspect-square h-[75vh] flex-1 overflow-hidden border border-dashed border-[#d0d7de] bg-[#fafbfc]"
+        class="flex aspect-square h-[80vh] flex-1 overflow-hidden border border-dashed border-[#d0d7de] bg-[#fafbfc]"
         aria-label="materials-content"
       >
         <div class="flex-1 border-r border-gray-300 p-6">
