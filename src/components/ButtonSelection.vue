@@ -20,6 +20,12 @@ const handleClick = (item: { id: string; name: string }) => {
   if (item.name === '单选题') {
     dataStore.addSurvey(dataStore.createFn.createSingleChoiceStore, item.name);
   }
+  if (item.name === '多选题') {
+    dataStore.addSurvey(dataStore.createFn.createMultipleChoiceStore, item.name);
+  }
+  if (item.name === '下拉选择题') {
+    dataStore.addSurvey(dataStore.createFn.createDropdownChoiceStore, item.name);
+  }
 
   if (activeComponentContext && componentMap && componentMap[item.name]) {
     activeComponentContext.setComponent(componentMap[item.name], item.name);

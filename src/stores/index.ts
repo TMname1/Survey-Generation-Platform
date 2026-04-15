@@ -4,6 +4,14 @@ import {
   createSingleChoiceStore,
   type createSingleChoiceStoreType,
 } from './choice/config/createSingleChoice.ts';
+import {
+  createDropdownChoiceStore,
+  type createDropdownChoiceStoreType,
+} from './choice/config/createDropdownChoice.ts';
+import {
+  createMultipleChoiceStore,
+  type createMultipleChoiceStoreType,
+} from './choice/config/createMultipleChoice.ts';
 
 export interface SurveyItem {
   id: number;
@@ -27,7 +35,13 @@ export interface SurveyItem {
 export const useDataStore = defineStore('data', () => {
   const survey = ref<SurveyItem[]>([]);
 
-  const addSurvey = (createFn: createSingleChoiceStoreType, typeName: string = '单选题') => {
+  const addSurvey = (
+    createFn:
+      | createSingleChoiceStoreType
+      | createDropdownChoiceStoreType
+      | createMultipleChoiceStoreType,
+    typeName: string = '单选题',
+  ) => {
     const created = createFn();
     survey.value.push({
       id: Date.now(),
@@ -57,6 +71,8 @@ export const useDataStore = defineStore('data', () => {
     removeSurvey,
     createFn: {
       createSingleChoiceStore,
+      createDropdownChoiceStore,
+      createMultipleChoiceStore,
     },
   };
 });

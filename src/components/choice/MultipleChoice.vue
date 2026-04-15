@@ -1,32 +1,36 @@
 <script lang="ts" setup>
 import { computed } from 'vue';
-import { useMultipleChoiceStore } from '@/stores/choice/multipleChoice';
 
-const store = useMultipleChoiceStore();
+const props = defineProps({
+  data: {
+    type: Object,
+    required: true,
+  },
+});
 
 const containerStyle = computed(() => ({
-  textAlign: store.position === '居中对齐' ? ('center' as const) : ('left' as const),
+  textAlign: props.data.position === '居中对齐' ? ('center' as const) : ('left' as const),
 }));
 
 const titleStyle = computed(() => ({
-  fontSize: `${store.titleSize}px`,
-  fontWeight: store.titleWeight === '加粗' ? 'bold' : 'normal',
-  fontStyle: store.titleItalic === '斜体' ? 'italic' : 'normal',
-  color: store.titleColor,
+  fontSize: `${props.data.titleSize}px`,
+  fontWeight: props.data.titleWeight === '加粗' ? 'bold' : 'normal',
+  fontStyle: props.data.titleItalic === '斜体' ? 'italic' : 'normal',
+  color: props.data.titleColor,
 }));
 
 const descStyle = computed(() => ({
-  fontSize: `${store.descSize}px`,
-  fontWeight: store.descWeight === '加粗' ? 'bold' : 'normal',
-  color: store.descColor,
+  fontSize: `${props.data.descSize}px`,
+  fontWeight: props.data.descWeight === '加粗' ? 'bold' : 'normal',
+  color: props.data.descColor,
 }));
 </script>
 <template>
   <div :style="containerStyle">
-    <h1 class="mb-5" :style="titleStyle">{{ store.title }}</h1>
-    <p class="mb-5" :style="descStyle">{{ store.desc }}</p>
+    <h1 class="mb-5" :style="titleStyle">{{ data.title }}</h1>
+    <p class="mb-5" :style="descStyle">{{ data.desc }}</p>
     <el-checkbox-group>
-      <el-checkbox v-for="(opt, index) in store.options" :key="index" :label="opt" :value="opt">{{
+      <el-checkbox v-for="(opt, index) in data.options" :key="index" :label="opt" :value="opt">{{
         opt
       }}</el-checkbox>
     </el-checkbox-group>

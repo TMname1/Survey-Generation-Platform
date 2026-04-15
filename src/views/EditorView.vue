@@ -44,7 +44,6 @@ const activeSurveyId = computed(() => activeStore.value?.id);
 
 const setActiveSurvey = (item: SurveyItem) => {
   activeStore.value = activeStore.value === item ? null : item;
-  console.log(activeStore.value);
 
   if (typeof item.type === 'string' && componentMap[item.type]) {
     activeComponent.value = componentMap[item.type];
