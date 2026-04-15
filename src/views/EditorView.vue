@@ -11,13 +11,9 @@ import {
   Message,
 } from '@element-plus/icons-vue';
 
-// Import stores
-import { useSingleChoiceStore } from '@/stores/choice/singleChoice';
-import { useMultipleChoiceStore } from '@/stores/choice/multipleChoice';
-import { useDropdownChoiceStore } from '@/stores/choice/dropdownChoice';
-import { useRateStore } from '@/stores/advanced/rate';
-import { useDateStore } from '@/stores/advanced/date';
-import { useTextInputStore } from '@/stores/input/textInput';
+import { useDataStore, type SurveyItem } from '@/stores/index.ts';
+
+const dataStore = useDataStore();
 
 // Import components
 import ButtonSelection from '@/components/ButtonSelection.vue';
@@ -43,6 +39,19 @@ import DescSetting from '@/views/materials/DescSetting.vue';
 const activeComponent = shallowRef<unknown>(null);
 const activeComponentName = ref<string>('');
 
+const activeStore = ref<SurveyItem | null>(null);
+const activeSurveyId = computed(() => activeStore.value?.id);
+
+const setActiveSurvey = (item: SurveyItem) => {
+  activeStore.value = activeStore.value === item ? null : item;
+  console.log(activeStore.value);
+
+  if (typeof item.type === 'string' && componentMap[item.type]) {
+    activeComponent.value = componentMap[item.type];
+    activeComponentName.value = item.type;
+  }
+};
+
 provide('activeComponent', {
   setComponent: (cmp: unknown, name?: string) => {
     activeComponent.value = cmp;
@@ -63,39 +72,10 @@ const componentMap: Record<string, unknown> = {
 
 provide('componentMap', componentMap);
 
-const singleChoiceStore = useSingleChoiceStore();
-
-const multipleChoiceStore = useMultipleChoiceStore();
-const dropdownChoiceStore = useDropdownChoiceStore();
-const rateStore = useRateStore();
-const dateStore = useDateStore();
-const textInputStore = useTextInputStore();
-
-const activeStore = computed(() => {
-  if (activeComponentName.value === '单选题') {
-    return singleChoiceStore;
-  }
-  if (activeComponentName.value === '多选题') {
-    return multipleChoiceStore;
-  }
-  if (activeComponentName.value === '下拉选择题') {
-    return dropdownChoiceStore;
-  }
-  if (activeComponentName.value === '评价') {
-    return rateStore;
-  }
-  if (activeComponentName.value === '日期') {
-    return dateStore;
-  }
-  if (activeComponentName.value === '文本输入') {
-    return textInputStore;
-  }
-  return null;
-});
-
 provide('activeStore', activeStore);
 
 const editComponentsMap: Record<string, unknown> = {
+  // TODO: 名字改回来
   textStyle: TextStyle,
   TitleSetting,
   DescSetting,
@@ -164,11 +144,21 @@ const contactBtnData = [
   <main class="flex h-[calc(100vh-4rem)] bg-gray-50 text-gray-800">
     <aside>
       <div class="flex w-16 flex-col items-center border-r border-gray-100 pt-5">
-        <div class="mb-6 cursor-pointer text-center text-sm text-blue-500">📄<br />题型</div>
-        <div class="mb-6 cursor-pointer text-center text-sm text-gray-500">目<br />大纲</div>
+        <div
+          class="mb-6 flex cursor-pointer flex-col items-center justify-between text-center text-sm text-blue-500"
+        >
+          <el-icon><Folder /></el-icon>
+          <div>题型</div>
+        </div>
+        <div
+          class="mb-6 flex cursor-pointer flex-col items-center justify-between text-center text-sm text-gray-500"
+        >
+          <el-icon><List /></el-icon>
+          <div>大纲</div>
+        </div>
       </div>
     </aside>
-    <aside class="flex w-65 flex-col border-r border-gray-300 bg-white p-5">
+    <aside class="flex w-65 flex-col overflow-y-auto border-r border-gray-300 bg-white p-5">
       <div class="mb-5">
         <div class="mb-2.5 flex items-center text-sm font-bold">
           <el-icon class="mr-1"><CircleCheck /></el-icon> 选择
@@ -214,19 +204,38 @@ const contactBtnData = [
     <section
       class="flex flex-1 flex-col items-center overflow-y-auto bg-linear-to-br from-blue-100 to-white p-10"
     >
-      <div
-        class="w-full max-w-200 rounded bg-white p-10 text-center shadow-[0_4px_12px_rgba(0,0,0,0.05)]"
-      >
+      <div class="rounded bg-white p-4 text-center shadow-[0_4px_12px_rgba(0,0,0,0.05)]">
         <h1 class="mb-7.5 text-2xl text-gray-800">问卷标题</h1>
         <p class="mb-8 text-left text-sm leading-[1.8] text-gray-600">
           为了给您提供更好的服务，希望能您抽出几分钟时间，将您的感受和建议告诉我们，我们非常重视每位用户的宝贵意见，期待您的参与！现在我们就马上开始吧！
         </p>
-        <component v-if="activeComponent" :is="activeComponent" />
+        <div class="flex flex-col gap-4">
+          <div
+            v-for="item in dataStore.survey"
+            :key="item.id"
+            class="relative cursor-pointer border border-transparent p-4 transition ease-out hover:shadow-lg"
+            :class="{ 'shadow-lg': activeSurveyId === item.id }"
+            @click="setActiveSurvey(item)"
+          >
+            <div
+              class="absolute -top-2.5 -right-2.5 flex h-5 w-5 cursor-pointer items-center justify-center rounded-2xl border bg-red-400 text-sm text-white hover:bg-red-300"
+              @click="
+                dataStore.removeSurvey(item.id);
+                activeStore = null;
+                setActiveSurvey(item);
+              "
+              v-show="activeSurveyId === item.id"
+            >
+              x
+            </div>
+            <component :is="componentMap[item.type]" :data="item" />
+          </div>
+        </div>
       </div>
     </section>
 
     <!-- 右侧编辑区 -->
-    <aside class="flex w-75 flex-col overflow-y-auto border-l border-gray-300 bg-white p-6">
+    <aside class="flex w-80 flex-col overflow-y-auto border-l border-gray-300 bg-white p-6">
       <div
         v-if="activeStore && activeStore.editComponents && activeStore.editComponents.length > 0"
         class="flex flex-col gap-3"

@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { inject } from 'vue';
+import { inject, type Ref } from 'vue';
+import type { SurveyItem } from '@/stores/index.ts';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const activeStore = inject<any>('activeStore');
+const activeStore = inject<Ref<SurveyItem>>('activeStore')!;
 </script>
 
 <template>

@@ -40,3 +40,5 @@ export const createSingleChoiceStore = () => {
     descColor,
   };
 };
+
+export type createSingleChoiceStoreType = typeof createSingleChoiceStore;

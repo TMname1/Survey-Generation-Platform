@@ -7,9 +7,7 @@
 
 <script setup lang="ts">
 import { inject, type Ref } from 'vue';
-import type { useSingleChoiceStore } from '@/stores/choice/singleChoice';
+import type { SurveyItem } from '@/stores/index';
 
-type ActiveStore = ReturnType<typeof useSingleChoiceStore>;
-
-const store = inject<Ref<ActiveStore>>('activeStore')!;
+const store = inject<Ref<SurveyItem>>('activeStore')!;
 </script>

@@ -152,7 +152,7 @@ const editComponentsMap: Record<string, unknown> = {
           <router-view></router-view>
         </div>
         <div class="flex-2 border-r border-gray-300 p-6">
-          <component v-if="activeComponent" :is="activeComponent" />
+          <component v-if="activeComponent" :is="activeComponent" :data="activeStore" />
         </div>
         <div class="flex-1.5 overflow-y-auto p-6">
           <h2 class="mb-4 text-lg font-bold">编辑面板</h2>

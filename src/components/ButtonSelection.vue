@@ -1,7 +1,8 @@
 <script lang="ts" setup>
-import { inject, ref, onMounted } from 'vue';
+import { inject, ref } from 'vue';
+import { useDataStore } from '@/stores/index.ts';
 
-const props = defineProps({
+defineProps({
   data: { type: Array<{ id: string; name: string }>, required: true },
 });
 
@@ -11,19 +12,19 @@ const activeComponentContext = inject<{ setComponent: (cmp: unknown, name?: stri
 const componentMap = inject<Record<string, unknown>>('componentMap');
 
 const activeId = ref<string>('');
+const dataStore = useDataStore();
 
 const handleClick = (item: { id: string; name: string }) => {
   activeId.value = item.id;
+
+  if (item.name === '单选题') {
+    dataStore.addSurvey(dataStore.createFn.createSingleChoiceStore, item.name);
+  }
+
   if (activeComponentContext && componentMap && componentMap[item.name]) {
     activeComponentContext.setComponent(componentMap[item.name], item.name);
   }
 };
-
-onMounted(() => {
-  if (props.data && props.data.length > 0) {
-    handleClick(props.data[0]!);
-  }
-});
 </script>
 
 <template>
@@ -32,7 +33,7 @@ onMounted(() => {
       class="ml-0! w-full"
       v-for="item in data"
       :key="item.id"
-      :type="activeId === item.id ? 'primary' : 'default'"
+      :type="activeId === item.id && $route.path !== '/editor' ? 'primary' : 'default'"
       @click="handleClick(item)"
     >
       {{ item.name }}
