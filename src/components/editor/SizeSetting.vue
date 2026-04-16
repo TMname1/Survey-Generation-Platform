@@ -1,5 +1,5 @@
 <template>
-  <div class="mb-5">
+  <div class="mb-5" v-show="store.type !== '备注说明' || store.remarkType === 'title'">
     <div class="mb-2 flex items-center justify-between">
       <div class="text-[14px] text-[#606266]">标题大小</div>
       <div class="text-[14px] text-[#909399]">{{ store.titleSize }}px</div>
@@ -40,7 +40,7 @@
       </div>
     </div>
   </div>
-  <div class="mb-5">
+  <div class="mb-5" v-show="!(store.type === '备注说明' && store.remarkType === 'title')">
     <div class="mb-2 flex items-center justify-between">
       <div class="text-[14px] text-[#606266]">描述大小</div>
       <div class="text-[14px] text-[#909399]">{{ store.descSize }}px</div>

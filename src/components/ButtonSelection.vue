@@ -26,6 +26,9 @@ const handleClick = (item: { id: string; name: string }) => {
   if (item.name === '下拉选择题') {
     dataStore.addSurvey(dataStore.createFn.createDropdownChoiceStore, item.name);
   }
+  if (item.name === '备注说明') {
+    dataStore.addSurvey(dataStore.createFn.createRemarkStore, item.name);
+  }
 
   if (activeComponentContext && componentMap && componentMap[item.name]) {
     activeComponentContext.setComponent(componentMap[item.name], item.name);

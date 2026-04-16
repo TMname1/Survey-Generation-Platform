@@ -23,6 +23,7 @@ import DropdownChoice from '@/components/choice/DropdownChoice.vue';
 import RateComponent from '@/components/advanced/RateComponent.vue';
 import DateComponent from '@/components/advanced/DateComponent.vue';
 import TextInput from '@/components/input/textInput.vue';
+import RemarkComponent from '@/components/remarks/RemarkComponent.vue';
 
 // Import edit components
 import BoldSetting from '@/components/editor/BoldSetting.vue';
@@ -32,6 +33,7 @@ import ItalicSetting from '@/components/editor/ItalicSetting.vue';
 import RadioOption from '@/components/editor/RadioOption.vue';
 import SizeSetting from '@/components/editor/SizeSetting.vue';
 import TextStyle from '@/components/editor/textStyle.vue';
+import TypeSwitchSetting from '@/components/editor/TypeSwitchSetting.vue';
 
 import TitleSetting from '@/views/materials/TitleSetting.vue';
 import DescSetting from '@/views/materials/DescSetting.vue';
@@ -67,6 +69,7 @@ const componentMap: Record<string, unknown> = {
   评价: RateComponent,
   日期: DateComponent,
   文本输入: TextInput,
+  备注说明: RemarkComponent,
 };
 
 provide('componentMap', componentMap);
@@ -84,6 +87,7 @@ const editComponentsMap: Record<string, unknown> = {
   BoldSetting,
   ItalicSetting,
   CenterSetting,
+  TypeSwitchSetting,
 };
 
 const selectionBtnData = [
@@ -101,23 +105,23 @@ const advancedBtnData = [
 
 const remarkBtnData = [{ id: '备注说明', name: '备注说明' }];
 
-const personalInfoBtnData = [
-  { id: '姓名', name: '姓名' },
-  { id: '身份证', name: '身份证' },
-  { id: '出生日期', name: '出生日期' },
-  { id: '性别', name: '性别' },
-  { id: '年龄', name: '年龄' },
-  { id: '学历', name: '学历' },
-  { id: '大学', name: '大学' },
-  { id: '专业', name: '专业' },
-];
+// const personalInfoBtnData = [
+//   { id: '姓名', name: '姓名' },
+//   { id: '身份证', name: '身份证' },
+//   { id: '出生日期', name: '出生日期' },
+//   { id: '性别', name: '性别' },
+//   { id: '年龄', name: '年龄' },
+//   { id: '学历', name: '学历' },
+//   { id: '大学', name: '大学' },
+//   { id: '专业', name: '专业' },
+// ];
 
-const contactBtnData = [
-  { id: '手机', name: '手机' },
-  { id: '微信', name: '微信' },
-  { id: 'QQ', name: 'QQ' },
-  { id: '邮箱', name: '邮箱' },
-];
+// const contactBtnData = [
+//   { id: '手机', name: '手机' },
+//   { id: '微信', name: '微信' },
+//   { id: 'QQ', name: 'QQ' },
+//   { id: '邮箱', name: '邮箱' },
+// ];
 </script>
 
 <template>
@@ -189,13 +193,13 @@ const contactBtnData = [
         <div class="mb-2.5 flex items-center text-sm font-bold">
           <el-icon class="mr-1"><User /></el-icon> 个人信息
         </div>
-        <ButtonSelection :data="personalInfoBtnData" />
+        <!-- <ButtonSelection :data="personalInfoBtnData" /> -->
       </div>
       <div class="mb-5">
         <div class="mb-2.5 flex items-center text-sm font-bold">
           <el-icon class="mr-1"><Message /></el-icon> 联系方式
         </div>
-        <ButtonSelection :data="contactBtnData" />
+        <!-- <ButtonSelection :data="contactBtnData" /> -->
       </div>
     </aside>
 

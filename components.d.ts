@@ -40,11 +40,13 @@ declare module 'vue' {
     MultipleChoice: typeof import('./src/components/choice/MultipleChoice.vue')['default']
     RadioOption: typeof import('./src/components/editor/RadioOption.vue')['default']
     RateComponent: typeof import('./src/components/advanced/RateComponent.vue')['default']
+    RemarkComponent: typeof import('./src/components/remarks/RemarkComponent.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     SingleChoice: typeof import('./src/components/choice/SingleChoice.vue')['default']
     SizeSetting: typeof import('./src/components/editor/SizeSetting.vue')['default']
     TextInput: typeof import('./src/components/input/textInput.vue')['default']
     TextStyle: typeof import('./src/components/editor/textStyle.vue')['default']
+    TypeSwitchSetting: typeof import('./src/components/editor/TypeSwitchSetting.vue')['default']
   }
 }

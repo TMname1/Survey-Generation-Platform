@@ -3,11 +3,11 @@ import { provide, shallowRef, ref, computed } from 'vue';
 import router from '@/router/index.ts';
 import { ArrowLeft, Select, Edit, Setting, Document, User, Phone } from '@element-plus/icons-vue';
 import { useSingleChoiceStore } from '@/stores/choice/singleChoice';
-// import { useDataStore } from '@/stores/index.ts';
 import { useMultipleChoiceStore } from '@/stores/choice/multipleChoice';
 import { useDropdownChoiceStore } from '@/stores/choice/dropdownChoice';
 import { useRateStore } from '@/stores/advanced/rate';
 import { useDateStore } from '@/stores/advanced/date';
+import { useRemarkStore } from '@/stores/remarks/remark';
 
 import { useTextInputStore } from '@/stores/input/textInput';
 
@@ -18,6 +18,7 @@ import DropdownChoice from '@/components/choice/DropdownChoice.vue';
 import RateComponent from '@/components/advanced/RateComponent.vue';
 import DateComponent from '@/components/advanced/DateComponent.vue';
 import TextInput from '@/components/input/textInput.vue';
+import RemarkComponent from '@/components/remarks/RemarkComponent.vue';
 
 // Import materials components
 import BoldSetting from '@/components/editor/BoldSetting.vue';
@@ -27,6 +28,7 @@ import ItalicSetting from '@/components/editor/ItalicSetting.vue';
 import RadioOption from '@/components/editor/RadioOption.vue';
 import SizeSetting from '@/components/editor/SizeSetting.vue';
 import TextStyle from '@/components/editor/textStyle.vue';
+import TypeSwitchSetting from '@/components/editor/TypeSwitchSetting.vue';
 
 // Local materials components
 import TitleSetting from './TitleSetting.vue';
@@ -51,6 +53,7 @@ const componentMap: Record<string, unknown> = {
   评价: RateComponent,
   日期: DateComponent,
   文本输入: TextInput,
+  备注说明: RemarkComponent,
   // TODO: 完成后面
   // 图片单选题: ImageSingleChoice,
   // 图片多选题: ....
@@ -79,6 +82,7 @@ const dropdownChoiceStore = useDropdownChoiceStore();
 const rateStore = useRateStore();
 const dateStore = useDateStore();
 const textInputStore = useTextInputStore();
+const remarkStore = useRemarkStore();
 
 const activeStore = computed(() => {
   if (activeComponentName.value === '多选题') {
@@ -96,6 +100,9 @@ const activeStore = computed(() => {
   if (activeComponentName.value === '文本输入') {
     return textInputStore;
   }
+  if (activeComponentName.value === '备注说明') {
+    return remarkStore;
+  }
   // 默认为单选题或单选题 store
   return singleChoiceStore;
 });
@@ -112,6 +119,7 @@ const editComponentsMap: Record<string, unknown> = {
   BoldSetting,
   ItalicSetting,
   CenterSetting,
+  TypeSwitchSetting,
 };
 </script>
 
@@ -151,8 +159,11 @@ const editComponentsMap: Record<string, unknown> = {
         <div class="flex-1 border-r border-gray-300 p-6">
           <router-view></router-view>
         </div>
-        <div class="flex-2 border-r border-gray-300 p-6">
+        <div class="relative flex-2 border-r border-gray-300 p-6">
           <component v-if="activeComponent" :is="activeComponent" :data="activeStore" />
+          <div v-else class="absolute top-1/2 left-1/2 -translate-1/2 text-gray-400">
+            点击组件进行查看
+          </div>
         </div>
         <div class="flex-1.5 overflow-y-auto p-6">
           <h2 class="mb-4 text-lg font-bold">编辑面板</h2>

@@ -12,6 +12,7 @@ import {
   createMultipleChoiceStore,
   type createMultipleChoiceStoreType,
 } from './choice/config/createMultipleChoice.ts';
+import { createRemarkStore, type createRemarkStoreType } from './remarks/config/createRemark.ts';
 
 export interface SurveyItem {
   id: number;
@@ -27,8 +28,10 @@ export interface SurveyItem {
   titleWeight?: string;
   descWeight?: string;
   titleItalic?: string;
+  descItalic?: string;
   titleColor?: string;
   descColor?: string;
+  remarkType?: 'title' | 'paragraph';
   [key: string]: unknown;
 }
 
@@ -39,7 +42,8 @@ export const useDataStore = defineStore('data', () => {
     createFn:
       | createSingleChoiceStoreType
       | createDropdownChoiceStoreType
-      | createMultipleChoiceStoreType,
+      | createMultipleChoiceStoreType
+      | createRemarkStoreType,
     typeName: string = '单选题',
   ) => {
     const created = createFn();
@@ -49,15 +53,26 @@ export const useDataStore = defineStore('data', () => {
       editComponents: unref(created.editComponents),
       title: unref(created.title),
       desc: unref(created.desc),
-      options: created.options ? unref(created.options) : undefined,
+      options:
+        'options' in created
+          ? unref((created as Record<string, unknown>).options as string[])
+          : undefined,
       position: unref(created.position),
       titleSize: unref(created.titleSize),
       descSize: unref(created.descSize),
       titleWeight: unref(created.titleWeight),
       descWeight: unref(created.descWeight),
       titleItalic: unref(created.titleItalic),
+      descItalic:
+        'descItalic' in created
+          ? unref((created as Record<string, unknown>).descItalic as string)
+          : undefined,
       titleColor: unref(created.titleColor),
       descColor: unref(created.descColor),
+      remarkType:
+        'remarkType' in created
+          ? unref((created as Record<string, unknown>).remarkType as 'title' | 'paragraph')
+          : undefined,
     });
   };
 
@@ -73,6 +88,7 @@ export const useDataStore = defineStore('data', () => {
       createSingleChoiceStore,
       createDropdownChoiceStore,
       createMultipleChoiceStore,
+      createRemarkStore,
     },
   };
 });
