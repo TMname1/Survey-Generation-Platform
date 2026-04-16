@@ -31,7 +31,7 @@ const inputVal = ref('');
 </script>
 
 <template>
-  <div :style="containerStyle">
+  <div :style="containerStyle" class="wrap-anywhere">
     <h1 class="mb-5" :style="titleStyle">{{ store.title }}</h1>
     <p class="mb-5" :style="descStyle">{{ store.desc }}</p>
     <el-input

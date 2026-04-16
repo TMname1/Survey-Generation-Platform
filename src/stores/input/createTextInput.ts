@@ -18,7 +18,9 @@ export const createTextInputStore = () => {
 
   const position = ref<'左对齐' | '居中对齐'>('左对齐');
   const titleSize = ref<22 | 20 | 18>(22);
+  const titleSizes = [22, 20, 18];
   const descSize = ref<16 | 14 | 12>(16);
+  const descSizes = [16, 14, 12];
 
   const titleWeight = ref<'加粗' | '正常'>('加粗');
   const descWeight = ref<'加粗' | '正常'>('正常');
@@ -33,7 +35,9 @@ export const createTextInputStore = () => {
     desc,
     position,
     titleSize,
+    titleSizes,
     descSize,
+    descSizes,
     titleWeight,
     descWeight,
     titleItalic,

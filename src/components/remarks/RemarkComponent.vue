@@ -42,7 +42,7 @@ const textStyle = computed(() => {
 </script>
 
 <template>
-  <div :style="containerStyle" class="p-4">
+  <div :style="containerStyle" class="wrap-anywhere">
     <component :is="props.data.remarkType === 'title' ? 'h1' : 'p'" :style="textStyle">
       {{ props.data.remarkType === 'title' ? props.data.title : props.data.desc }}
     </component>

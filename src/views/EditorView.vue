@@ -177,16 +177,14 @@ const editComponentsMap: Record<string, unknown> = {
       class="flex flex-1 flex-col items-center overflow-y-auto bg-linear-to-br from-blue-100 to-white p-10"
     >
       <div class="rounded bg-white p-4 text-center shadow-[0_4px_12px_rgba(0,0,0,0.05)]">
-        <h1 class="mb-7.5 text-2xl text-gray-800">问卷标题</h1>
-        <p class="mb-8 text-left text-sm leading-[1.8] text-gray-600">
-          为了给您提供更好的服务，希望能您抽出几分钟时间，将您的感受和建议告诉我们，我们非常重视每位用户的宝贵意见，期待您的参与！现在我们就马上开始吧！
-        </p>
-        <div class="flex flex-col gap-4">
+        <div class="flex flex-col">
           <div
             v-for="item in dataStore.survey"
             :key="item.id"
-            class="relative cursor-pointer border border-transparent p-4 transition ease-out hover:shadow-lg"
-            :class="{ 'shadow-lg': activeSurveyId === item.id }"
+            class="relative cursor-pointer p-4 transition ease-out hover:shadow-lg"
+            :class="{
+              'border-2 border-blue-400 shadow-lg': activeSurveyId === item.id,
+            }"
             @click="setActiveSurvey(item)"
           >
             <div
