@@ -1,8 +1,14 @@
 <script lang="ts" setup>
 import { computed, ref } from 'vue';
-import { useDateStore } from '@/stores/advanced/date';
 
-const store = useDateStore();
+const props = defineProps({
+  data: {
+    type: Object,
+    required: true,
+  },
+});
+
+const store = props.data;
 
 const containerStyle = computed(() => ({
   textAlign: store.position === '居中对齐' ? ('center' as const) : ('left' as const),

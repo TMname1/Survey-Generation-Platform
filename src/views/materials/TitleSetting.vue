@@ -7,7 +7,7 @@
 
 <script setup lang="ts">
 import { inject, type Ref } from 'vue';
-import type { SurveyItem } from '@/stores/index.ts';
+import type { SurveyItem } from '@/stores/survey.ts';
 
 const store = inject<Ref<SurveyItem>>('activeStore')!;
 </script>

@@ -4,6 +4,9 @@ import { createSingleChoiceStore } from './choice/createSingleChoice.ts';
 import { createMultipleChoiceStore } from './choice/createMultipleChoice.ts';
 import { createDropdownChoiceStore } from './choice/createDropdownChoice.ts';
 import { createRemarkStore } from './remarks/createRemark.ts';
+import { createRateStore } from './advanced/createRate.ts';
+import { createDateStore } from './advanced/createDate.ts';
+import { createTextInputStore } from './input/createTextInput.ts';
 
 export const useMaterialsStore = defineStore('materials', () => {
   const selectionBtnData = ref([
@@ -43,6 +46,9 @@ export const useMaterialsStore = defineStore('materials', () => {
     createMultipleChoiceStore(),
     createDropdownChoiceStore(),
     createRemarkStore(),
+    createRateStore(),
+    createDateStore(),
+    createTextInputStore(),
   ];
 
   return {

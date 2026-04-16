@@ -41,7 +41,7 @@
 
 <script setup lang="ts">
 import { inject, type Ref } from 'vue';
-import type { SurveyItem } from '@/stores/index';
+import type { SurveyItem } from '@/stores/survey';
 
 const store = inject<Ref<SurveyItem>>('activeStore')!;
 </script>

@@ -11,7 +11,7 @@ import {
   Message,
 } from '@element-plus/icons-vue';
 
-import { useDataStore, type SurveyItem } from '@/stores/index.ts';
+import { useDataStore, type SurveyItem } from '@/stores/survey.ts';
 import { useMaterialsStore } from '@/stores/materials';
 
 const dataStore = useDataStore();

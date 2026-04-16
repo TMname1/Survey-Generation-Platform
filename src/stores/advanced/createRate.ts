@@ -1,9 +1,7 @@
 import { ref } from 'vue';
-import { defineStore } from 'pinia';
 
-export const useTextInputStore = defineStore('textInput', () => {
+export const createRateStore = () => {
   const editComponents = ref([
-    'textStyle',
     'TitleSetting',
     'DescSetting',
     'SizeSetting',
@@ -12,10 +10,8 @@ export const useTextInputStore = defineStore('textInput', () => {
     'ItalicSetting',
     'CenterSetting',
   ]);
-  const style = ref<'多行文本' | '单行文本'>('多行文本');
-
-  const title = ref('文本输入题默认标题');
-  const desc = ref('文本输入题默认描述');
+  const title = ref('评价打分');
+  const desc = ref('请您打分');
 
   const position = ref<'左对齐' | '居中对齐'>('左对齐');
   const titleSize = ref<22 | 20 | 18>(22);
@@ -28,7 +24,6 @@ export const useTextInputStore = defineStore('textInput', () => {
   const descColor = ref('#909399');
 
   return {
-    style,
     editComponents,
     title,
     desc,
@@ -41,4 +36,6 @@ export const useTextInputStore = defineStore('textInput', () => {
     titleColor,
     descColor,
   };
-});
+};
+
+export type createRateStoreType = typeof createRateStore;

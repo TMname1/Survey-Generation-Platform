@@ -13,6 +13,9 @@ import {
   type createMultipleChoiceStoreType,
 } from './choice/createMultipleChoice.ts';
 import { createRemarkStore, type createRemarkStoreType } from './remarks/createRemark.ts';
+import { createRateStore, type createRateStoreType } from './advanced/createRate.ts';
+import { createDateStore, type createDateStoreType } from './advanced/createDate.ts';
+import { createTextInputStore, type createTextInputStoreType } from './input/createTextInput.ts';
 
 export interface SurveyItem {
   id: number;
@@ -43,7 +46,10 @@ export const useDataStore = defineStore('data', () => {
       | createSingleChoiceStoreType
       | createDropdownChoiceStoreType
       | createMultipleChoiceStoreType
-      | createRemarkStoreType,
+      | createRemarkStoreType
+      | createRateStoreType
+      | createDateStoreType
+      | createTextInputStoreType,
     typeName: string = '单选题',
   ) => {
     const created = createFn();
@@ -73,6 +79,10 @@ export const useDataStore = defineStore('data', () => {
         'remarkType' in created
           ? unref((created as Record<string, unknown>).remarkType as 'title' | 'paragraph')
           : undefined,
+      style:
+        'style' in created
+          ? unref((created as Record<string, unknown>).style as '多行文本' | '单行文本')
+          : undefined,
     });
   };
 
@@ -89,6 +99,9 @@ export const useDataStore = defineStore('data', () => {
       createDropdownChoiceStore,
       createMultipleChoiceStore,
       createRemarkStore,
+      createRateStore,
+      createDateStore,
+      createTextInputStore,
     },
   };
 });

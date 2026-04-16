@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { inject, ref } from 'vue';
-import { useDataStore } from '@/stores/index.ts';
+import { useDataStore } from '@/stores/survey.ts';
 import { useRoute } from 'vue-router';
 
 defineProps({
@@ -30,12 +30,15 @@ const handleClick = (item: { id: string; name: string }) => {
     if (item.name === '下拉选择题') {
       dataStore.addSurvey(dataStore.createFn.createDropdownChoiceStore, item.name);
     }
-    // if (item.name === '评价') {
-    //   dataStore.addSurvey(dataStore.createFn.createRemarkStore, item.name);
-    // }
-    // if (item.name === '日期') {
-    //   dataStore.addSurvey(dataStore.createFn.createRemarkStore, item.name);
-    // }
+    if (item.name === '评价') {
+      dataStore.addSurvey(dataStore.createFn.createRateStore, item.name);
+    }
+    if (item.name === '日期') {
+      dataStore.addSurvey(dataStore.createFn.createDateStore, item.name);
+    }
+    if (item.name === '文本输入') {
+      dataStore.addSurvey(dataStore.createFn.createTextInputStore, item.name);
+    }
     if (item.name === '备注说明') {
       dataStore.addSurvey(dataStore.createFn.createRemarkStore, item.name);
     }

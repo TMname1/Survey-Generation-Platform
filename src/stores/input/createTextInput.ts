@@ -1,8 +1,8 @@
 import { ref } from 'vue';
-import { defineStore } from 'pinia';
 
-export const useDateStore = defineStore('date', () => {
+export const createTextInputStore = () => {
   const editComponents = ref([
+    'textStyle',
     'TitleSetting',
     'DescSetting',
     'SizeSetting',
@@ -11,8 +11,10 @@ export const useDateStore = defineStore('date', () => {
     'ItalicSetting',
     'CenterSetting',
   ]);
-  const title = ref('日期选择');
-  const desc = ref('请选择日期');
+  const style = ref<'多行文本' | '单行文本'>('多行文本');
+
+  const title = ref('文本输入题默认标题');
+  const desc = ref('文本输入题默认描述');
 
   const position = ref<'左对齐' | '居中对齐'>('左对齐');
   const titleSize = ref<22 | 20 | 18>(22);
@@ -25,6 +27,7 @@ export const useDateStore = defineStore('date', () => {
   const descColor = ref('#909399');
 
   return {
+    style,
     editComponents,
     title,
     desc,
@@ -37,4 +40,6 @@ export const useDateStore = defineStore('date', () => {
     titleColor,
     descColor,
   };
-});
+};
+
+export type createTextInputStoreType = typeof createTextInputStore;

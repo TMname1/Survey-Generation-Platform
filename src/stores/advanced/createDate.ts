@@ -1,7 +1,6 @@
 import { ref } from 'vue';
-import { defineStore } from 'pinia';
 
-export const useRateStore = defineStore('rate', () => {
+export const createDateStore = () => {
   const editComponents = ref([
     'TitleSetting',
     'DescSetting',
@@ -11,8 +10,8 @@ export const useRateStore = defineStore('rate', () => {
     'ItalicSetting',
     'CenterSetting',
   ]);
-  const title = ref('评价打分');
-  const desc = ref('请您打分');
+  const title = ref('日期选择');
+  const desc = ref('请选择日期');
 
   const position = ref<'左对齐' | '居中对齐'>('左对齐');
   const titleSize = ref<22 | 20 | 18>(22);
@@ -37,4 +36,6 @@ export const useRateStore = defineStore('rate', () => {
     titleColor,
     descColor,
   };
-});
+};
+
+export type createDateStoreType = typeof createDateStore;

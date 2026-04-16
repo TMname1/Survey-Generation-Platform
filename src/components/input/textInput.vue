@@ -1,9 +1,14 @@
 <script lang="ts" setup>
-import { computed } from 'vue';
-import { useTextInputStore } from '@/stores/input/textInput';
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 
-const store = useTextInputStore();
+const props = defineProps({
+  data: {
+    type: Object,
+    required: true,
+  },
+});
+
+const store = props.data;
 
 const containerStyle = computed(() => ({
   textAlign: store.position === '居中对齐' ? ('center' as const) : ('left' as const),

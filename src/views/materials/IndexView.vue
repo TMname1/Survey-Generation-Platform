@@ -2,10 +2,7 @@
 import { provide, shallowRef, ref, computed } from 'vue';
 import router from '@/router/index.ts';
 import { ArrowLeft, Select, Edit, Setting, Document, User, Phone } from '@element-plus/icons-vue';
-import { useRateStore } from '@/stores/advanced/rate';
-import { useDateStore } from '@/stores/advanced/date';
 import { useMaterialsStore } from '@/stores/materials.ts';
-import { useTextInputStore } from '@/stores/input/textInput';
 
 // Import components
 import SingleChoice from '@/components/choice/SingleChoice.vue';
@@ -72,7 +69,7 @@ const colors = ['primary', 'success', 'warning', 'danger'];
 // const singleChoiceStore = useDataStore().createSingleChoiceStore();
 // console.log(singleChoiceStore);
 
-// import { useDataStore } from '@/stores/index.ts';
+// import { useDataStore } from '@/stores/survey.ts';
 
 // const dataStore = useDataStore();
 
@@ -83,10 +80,10 @@ const materialsStore = useMaterialsStore();
 const singleChoiceStore = materialsStore.materials[0]!;
 const multipleChoiceStore = materialsStore.materials[1]!;
 const dropdownChoiceStore = materialsStore.materials[2]!;
-const rateStore = useRateStore();
-const dateStore = useDateStore();
-const textInputStore = useTextInputStore();
 const remarkStore = materialsStore.materials[3]!;
+const rateStore = materialsStore.materials[4]!;
+const dateStore = materialsStore.materials[5]!;
+const textInputStore = materialsStore.materials[6]!;
 
 const activeStore = computed(() => {
   if (activeComponentName.value === '多选题') {
