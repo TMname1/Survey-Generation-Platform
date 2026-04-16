@@ -1,8 +1,10 @@
 <script lang="ts" setup>
 import ButtonSelection from '@/components/ButtonSelection.vue';
-const btnData = [{ id: '1', name: '备注说明' }];
+import { useMaterialsStore } from '@/stores/materials';
+
+const materialsStore = useMaterialsStore();
 </script>
 
 <template>
-  <ButtonSelection :data="btnData"></ButtonSelection>
+  <ButtonSelection :data="materialsStore.remarkBtnData"></ButtonSelection>
 </template>

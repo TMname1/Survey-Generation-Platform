@@ -76,8 +76,15 @@ const colors = ['primary', 'success', 'warning', 'danger'];
 // const singleChoiceStore = useDataStore().createSingleChoiceStore();
 // console.log(singleChoiceStore);
 
+// import { useDataStore } from '@/stores/index.ts';
+
+// const dataStore = useDataStore();
+
+// const singleChoiceStore = dataStore.createFn.createSingleChoiceStore();
+
 const singleChoiceStore = useSingleChoiceStore();
 const multipleChoiceStore = useMultipleChoiceStore();
+
 const dropdownChoiceStore = useDropdownChoiceStore();
 const rateStore = useRateStore();
 const dateStore = useDateStore();
@@ -159,7 +166,7 @@ const editComponentsMap: Record<string, unknown> = {
         <div class="flex-1 border-r border-gray-300 p-6">
           <router-view></router-view>
         </div>
-        <div class="relative flex-2 border-r border-gray-300 p-6">
+        <div class="relative flex-2 border-r border-gray-300 p-6 wrap-anywhere">
           <component v-if="activeComponent" :is="activeComponent" :data="activeStore" />
           <div v-else class="absolute top-1/2 left-1/2 -translate-1/2 text-gray-400">
             点击组件进行查看
@@ -167,12 +174,20 @@ const editComponentsMap: Record<string, unknown> = {
         </div>
         <div class="flex-1.5 overflow-y-auto p-6">
           <h2 class="mb-4 text-lg font-bold">编辑面板</h2>
-          <div class="flex flex-col gap-3">
-            <component
-              v-for="cmpName in activeStore.editComponents"
-              :key="cmpName"
-              :is="editComponentsMap[cmpName]"
-            />
+          <div class="relative min-h-130 min-w-70">
+            <div v-if="activeComponent" class="flex flex-col gap-3">
+              <component
+                v-for="cmpName in activeStore.editComponents"
+                :key="cmpName"
+                :is="editComponentsMap[cmpName]"
+              />
+            </div>
+            <div
+              v-else
+              class="absolute top-1/2 left-1/2 flex -translate-1/2 items-center justify-center text-sm text-gray-400"
+            >
+              点击组件进行编辑
+            </div>
           </div>
         </div>
       </section>

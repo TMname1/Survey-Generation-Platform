@@ -1,8 +1,10 @@
 <script lang="ts" setup>
 import ButtonSelection from '@/components/ButtonSelection.vue';
-const btnData = [{ id: '文本输入', name: '文本输入' }];
+import { useMaterialsStore } from '@/stores/materials';
+
+const materialsStore = useMaterialsStore();
 </script>
 
 <template>
-  <ButtonSelection :data="btnData"></ButtonSelection>
+  <ButtonSelection :data="materialsStore.textInputBtnData"></ButtonSelection>
 </template>

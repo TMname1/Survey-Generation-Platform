@@ -12,8 +12,10 @@ import {
 } from '@element-plus/icons-vue';
 
 import { useDataStore, type SurveyItem } from '@/stores/index.ts';
+import { useMaterialsStore } from '@/stores/materials';
 
 const dataStore = useDataStore();
+const materialsStore = useMaterialsStore();
 
 // Import components
 import ButtonSelection from '@/components/ButtonSelection.vue';
@@ -89,39 +91,6 @@ const editComponentsMap: Record<string, unknown> = {
   CenterSetting,
   TypeSwitchSetting,
 };
-
-const selectionBtnData = [
-  { id: '单选题', name: '单选题' },
-  { id: '多选题', name: '多选题' },
-  { id: '下拉选择题', name: '下拉选择题' },
-];
-
-const textInputBtnData = [{ id: '文本输入', name: '文本输入' }];
-
-const advancedBtnData = [
-  { id: '评价', name: '评价' },
-  { id: '日期', name: '日期' },
-];
-
-const remarkBtnData = [{ id: '备注说明', name: '备注说明' }];
-
-// const personalInfoBtnData = [
-//   { id: '姓名', name: '姓名' },
-//   { id: '身份证', name: '身份证' },
-//   { id: '出生日期', name: '出生日期' },
-//   { id: '性别', name: '性别' },
-//   { id: '年龄', name: '年龄' },
-//   { id: '学历', name: '学历' },
-//   { id: '大学', name: '大学' },
-//   { id: '专业', name: '专业' },
-// ];
-
-// const contactBtnData = [
-//   { id: '手机', name: '手机' },
-//   { id: '微信', name: '微信' },
-//   { id: 'QQ', name: 'QQ' },
-//   { id: '邮箱', name: '邮箱' },
-// ];
 </script>
 
 <template>
@@ -166,40 +135,40 @@ const remarkBtnData = [{ id: '备注说明', name: '备注说明' }];
         <div class="mb-2.5 flex items-center text-sm font-bold">
           <el-icon class="mr-1"><CircleCheck /></el-icon> 选择
         </div>
-        <ButtonSelection :data="selectionBtnData" />
+        <ButtonSelection :data="materialsStore.selectionBtnData" />
       </div>
       <div class="mb-5">
         <div class="mb-2.5 flex items-center text-sm font-bold">
           <el-icon class="mr-1"><EditPen /></el-icon> 文本输入
         </div>
-        <ButtonSelection :data="textInputBtnData" />
+        <ButtonSelection :data="materialsStore.textInputBtnData" />
       </div>
 
       <div class="mb-5">
         <div class="mb-2.5 flex items-center text-sm font-bold">
           <el-icon class="mr-1"><MessageBox /></el-icon> 高级题型
         </div>
-        <ButtonSelection :data="advancedBtnData" />
+        <ButtonSelection :data="materialsStore.advancedBtnData" />
       </div>
 
       <div class="mb-5">
         <div class="mb-2.5 flex items-center text-sm font-bold">
           <el-icon class="mr-1"><ChatLineSquare /></el-icon> 备注说明
         </div>
-        <ButtonSelection :data="remarkBtnData" />
+        <ButtonSelection :data="materialsStore.remarkBtnData" />
       </div>
 
       <div class="mb-5">
         <div class="mb-2.5 flex items-center text-sm font-bold">
           <el-icon class="mr-1"><User /></el-icon> 个人信息
         </div>
-        <!-- <ButtonSelection :data="personalInfoBtnData" /> -->
+        <ButtonSelection :data="materialsStore.personalInfoBtnData" />
       </div>
       <div class="mb-5">
         <div class="mb-2.5 flex items-center text-sm font-bold">
           <el-icon class="mr-1"><Message /></el-icon> 联系方式
         </div>
-        <!-- <ButtonSelection :data="contactBtnData" /> -->
+        <ButtonSelection :data="materialsStore.contactBtnData" />
       </div>
     </aside>
 
@@ -251,7 +220,7 @@ const remarkBtnData = [{ id: '备注说明', name: '备注说明' }];
         />
       </div>
       <div v-else class="flex h-full items-center justify-center text-sm text-gray-400">
-        点击题型进行编辑
+        点击组件进行编辑
       </div>
     </aside>
   </main>
