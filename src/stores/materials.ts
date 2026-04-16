@@ -1,6 +1,9 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
-import { createDropdownChoiceStore } from './choice/config/createDropdownChoice.ts';
+import { createSingleChoiceStore } from './choice/createSingleChoice.ts';
+import { createMultipleChoiceStore } from './choice/createMultipleChoice.ts';
+import { createDropdownChoiceStore } from './choice/createDropdownChoice.ts';
+import { createRemarkStore } from './remarks/createRemark.ts';
 
 export const useMaterialsStore = defineStore('materials', () => {
   const selectionBtnData = ref([
@@ -35,7 +38,12 @@ export const useMaterialsStore = defineStore('materials', () => {
     { id: '4', name: '测试4' },
   ]);
 
-  const materials = [createDropdownChoiceStore()];
+  const materials = [
+    createSingleChoiceStore(),
+    createMultipleChoiceStore(),
+    createDropdownChoiceStore(),
+    createRemarkStore(),
+  ];
 
   return {
     selectionBtnData,
@@ -44,7 +52,6 @@ export const useMaterialsStore = defineStore('materials', () => {
     remarkBtnData,
     personalInfoBtnData,
     contactBtnData,
-    // TODO: 待测试，将所有组件集中
     materials,
   };
 });

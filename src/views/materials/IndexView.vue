@@ -2,13 +2,9 @@
 import { provide, shallowRef, ref, computed } from 'vue';
 import router from '@/router/index.ts';
 import { ArrowLeft, Select, Edit, Setting, Document, User, Phone } from '@element-plus/icons-vue';
-import { useSingleChoiceStore } from '@/stores/choice/singleChoice';
-import { useMultipleChoiceStore } from '@/stores/choice/multipleChoice';
-import { useDropdownChoiceStore } from '@/stores/choice/dropdownChoice';
 import { useRateStore } from '@/stores/advanced/rate';
 import { useDateStore } from '@/stores/advanced/date';
-import { useRemarkStore } from '@/stores/remarks/remark';
-
+import { useMaterialsStore } from '@/stores/materials.ts';
 import { useTextInputStore } from '@/stores/input/textInput';
 
 // Import components
@@ -82,14 +78,15 @@ const colors = ['primary', 'success', 'warning', 'danger'];
 
 // const singleChoiceStore = dataStore.createFn.createSingleChoiceStore();
 
-const singleChoiceStore = useSingleChoiceStore();
-const multipleChoiceStore = useMultipleChoiceStore();
+const materialsStore = useMaterialsStore();
 
-const dropdownChoiceStore = useDropdownChoiceStore();
+const singleChoiceStore = materialsStore.materials[0]!;
+const multipleChoiceStore = materialsStore.materials[1]!;
+const dropdownChoiceStore = materialsStore.materials[2]!;
 const rateStore = useRateStore();
 const dateStore = useDateStore();
 const textInputStore = useTextInputStore();
-const remarkStore = useRemarkStore();
+const remarkStore = materialsStore.materials[3]!;
 
 const activeStore = computed(() => {
   if (activeComponentName.value === '多选题') {

@@ -3,16 +3,16 @@ import { ref, unref } from 'vue';
 import {
   createSingleChoiceStore,
   type createSingleChoiceStoreType,
-} from './choice/config/createSingleChoice.ts';
+} from './choice/createSingleChoice.ts';
 import {
   createDropdownChoiceStore,
   type createDropdownChoiceStoreType,
-} from './choice/config/createDropdownChoice.ts';
+} from './choice/createDropdownChoice.ts';
 import {
   createMultipleChoiceStore,
   type createMultipleChoiceStoreType,
-} from './choice/config/createMultipleChoice.ts';
-import { createRemarkStore, type createRemarkStoreType } from './remarks/config/createRemark.ts';
+} from './choice/createMultipleChoice.ts';
+import { createRemarkStore, type createRemarkStoreType } from './remarks/createRemark.ts';
 
 export interface SurveyItem {
   id: number;

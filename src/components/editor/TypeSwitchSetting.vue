@@ -16,7 +16,7 @@
           @click="
             store.remarkType = 'title';
             store.position = '居中对齐';
-            store.editComponents = store.editComponents.map((c) =>
+            store.editComponents = store.editComponents!.map((c) =>
               c === 'DescSetting' ? 'TitleSetting' : c,
             );
           "
@@ -33,7 +33,7 @@
           @click="
             store.remarkType = 'paragraph';
             store.position = '左对齐';
-            store.editComponents = store.editComponents.map((c) =>
+            store.editComponents = store.editComponents!.map((c) =>
               c === 'TitleSetting' ? 'DescSetting' : c,
             );
           "
