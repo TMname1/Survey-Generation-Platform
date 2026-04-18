@@ -39,16 +39,16 @@ declare module 'vue' {
     ImageSingleChoice: typeof import('./src/components/choice/ImageSingleChoice.vue')['default']
     ItalicSetting: typeof import('./src/components/editor/ItalicSetting.vue')['default']
     MultipleChoice: typeof import('./src/components/choice/MultipleChoice.vue')['default']
+    ParagraphComponent: typeof import('./src/components/remarks/ParagraphComponent.vue')['default']
     RadioOption: typeof import('./src/components/editor/RadioOption.vue')['default']
     RateComponent: typeof import('./src/components/advanced/RateComponent.vue')['default']
-    RemarkComponent: typeof import('./src/components/remarks/RemarkComponent.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     SingleChoice: typeof import('./src/components/choice/SingleChoice.vue')['default']
     SizeSetting: typeof import('./src/components/editor/SizeSetting.vue')['default']
     TextInput: typeof import('./src/components/input/textInput.vue')['default']
     TextStyle: typeof import('./src/components/editor/textStyle.vue')['default']
+    TitleComponent: typeof import('./src/components/remarks/TitleComponent.vue')['default']
     TitleSetting: typeof import('./src/components/editor/TitleSetting.vue')['default']
-    TypeSwitchSetting: typeof import('./src/components/editor/TypeSwitchSetting.vue')['default']
   }
 }

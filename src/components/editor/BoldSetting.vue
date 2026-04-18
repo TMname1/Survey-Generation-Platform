@@ -1,5 +1,5 @@
 <template>
-  <div class="mb-2.5" v-show="store.type !== '备注说明' || store.remarkType === 'title'">
+  <div class="mb-2.5" v-show="store.hasTitleSize !== false">
     <div class="flex items-center justify-start gap-4">
       <div class="text-[14px] text-[#606266]">标题加粗</div>
       <div class="text-[14px] text-[#909399]">{{ store.titleWeight }}</div>
@@ -18,7 +18,7 @@
       </div>
     </div>
   </div>
-  <div class="mb-2.5" v-show="!(store.type === '备注说明' && store.remarkType === 'title')">
+  <div class="mb-2.5" v-show="store.hasDescSize !== false">
     <div class="flex items-center justify-start gap-4">
       <div class="text-[14px] text-[#606266]">描述加粗</div>
       <div class="text-[14px] text-[#909399]">{{ store.descWeight }}</div>

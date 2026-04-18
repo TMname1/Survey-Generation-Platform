@@ -3,7 +3,8 @@ import { ref } from 'vue';
 import { createSingleChoiceStore } from './choice/createSingleChoice.ts';
 import { createMultipleChoiceStore } from './choice/createMultipleChoice.ts';
 import { createDropdownChoiceStore } from './choice/createDropdownChoice.ts';
-import { createRemarkStore } from './remarks/createRemark.ts';
+import { createRemarkCTXStore } from './remarks/createRemarkCTX.ts';
+import { createRemarkTitleStore } from './remarks/createRemarkTitle.ts';
 import { createRateStore } from './advanced/createRate.ts';
 import { createDateStore } from './advanced/createDate.ts';
 import { createTextInputStore } from './input/createTextInput.ts';
@@ -25,7 +26,10 @@ export const useMaterialsStore = defineStore('materials', () => {
     { id: '日期', name: '日期' },
   ]);
 
-  const remarkBtnData = ref([{ id: '备注说明', name: '备注说明' }]);
+  const remarkBtnData = ref([
+    { id: '备注标题', name: '备注标题' },
+    { id: '备注段落', name: '备注段落' },
+  ]);
 
   const personalInfoBtnData = ref([
     { id: '1', name: '测试1' },
@@ -45,7 +49,8 @@ export const useMaterialsStore = defineStore('materials', () => {
     createSingleChoiceStore(),
     createMultipleChoiceStore(),
     createDropdownChoiceStore(),
-    createRemarkStore(),
+    createRemarkTitleStore(),
+    createRemarkCTXStore(),
     createRateStore(),
     createDateStore(),
     createTextInputStore(),

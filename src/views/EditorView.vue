@@ -25,7 +25,8 @@ import DropdownChoice from '@/components/choice/DropdownChoice.vue';
 import RateComponent from '@/components/advanced/RateComponent.vue';
 import DateComponent from '@/components/advanced/DateComponent.vue';
 import TextInput from '@/components/input/textInput.vue';
-import RemarkComponent from '@/components/remarks/RemarkComponent.vue';
+import TitleComponent from '@/components/remarks/TitleComponent.vue';
+import ParagraphComponent from '@/components/remarks/ParagraphComponent.vue';
 
 // Import edit components
 import BoldSetting from '@/components/editor/BoldSetting.vue';
@@ -35,7 +36,6 @@ import ItalicSetting from '@/components/editor/ItalicSetting.vue';
 import RadioOption from '@/components/editor/RadioOption.vue';
 import SizeSetting from '@/components/editor/SizeSetting.vue';
 import TextStyle from '@/components/editor/textStyle.vue';
-import TypeSwitchSetting from '@/components/editor/TypeSwitchSetting.vue';
 
 import TitleSetting from '@/components/editor/TitleSetting.vue';
 import DescSetting from '@/components/editor/DescSetting.vue';
@@ -71,7 +71,8 @@ const componentMap: Record<string, unknown> = {
   评价: RateComponent,
   日期: DateComponent,
   文本输入: TextInput,
-  备注说明: RemarkComponent,
+  备注标题: TitleComponent,
+  备注段落: ParagraphComponent,
 };
 
 provide('componentMap', componentMap);
@@ -89,7 +90,6 @@ const editComponentsMap: Record<string, unknown> = {
   BoldSetting,
   ItalicSetting,
   CenterSetting,
-  TypeSwitchSetting,
 };
 </script>
 
