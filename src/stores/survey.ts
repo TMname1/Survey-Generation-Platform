@@ -58,6 +58,7 @@ type SurveySource = ReturnType<
 
 export const useDataStore = defineStore('data', () => {
   const survey = ref<SurveyItem[]>([]);
+  let idCounter = Date.now();
 
   const addSurvey = (
     createFn:
@@ -73,8 +74,9 @@ export const useDataStore = defineStore('data', () => {
   ) => {
     const created = createFn() as SurveySource;
     const itemType = 'type' in created ? unref(created.type) : typeName;
+    idCounter++;
     const item: SurveyItem = {
-      id: Date.now(),
+      id: idCounter,
       type: itemType,
       editComponents: unref(created.editComponents),
       title:

@@ -13,9 +13,7 @@ import {
 
 import { useDataStore, type SurveyItem } from '@/stores/survey.ts';
 import { useMaterialsStore } from '@/stores/materials';
-
-const dataStore = useDataStore();
-const materialsStore = useMaterialsStore();
+import { useDraggable } from 'vue-draggable-plus';
 
 // Import components
 import ButtonSelection from '@/components/ButtonSelection.vue';
@@ -36,7 +34,6 @@ import ItalicSetting from '@/components/editor/ItalicSetting.vue';
 import RadioOption from '@/components/editor/RadioOption.vue';
 import SizeSetting from '@/components/editor/SizeSetting.vue';
 import TextStyle from '@/components/editor/textStyle.vue';
-
 import TitleSetting from '@/components/editor/TitleSetting.vue';
 import DescSetting from '@/components/editor/DescSetting.vue';
 
@@ -91,6 +88,23 @@ const editComponentsMap: Record<string, unknown> = {
   ItalicSetting,
   CenterSetting,
 };
+
+const dataStore = useDataStore();
+const materialsStore = useMaterialsStore();
+
+const draggableElement = ref();
+useDraggable(draggableElement, ref([...dataStore.survey]), {
+  animation: 150,
+  ghostClass: 'ghost',
+  onUpdate({ oldIndex, newIndex }) {
+    function moveElement(arr: SurveyItem[], fromIndex: number, toIndex: number) {
+      const element = arr.splice(fromIndex, 1)[0] as SurveyItem;
+      arr.splice(toIndex, 0, element);
+      return arr;
+    }
+    moveElement(dataStore.survey, oldIndex!, newIndex!);
+  },
+});
 </script>
 
 <template>
@@ -130,7 +144,7 @@ const editComponentsMap: Record<string, unknown> = {
         </div>
       </div>
     </aside>
-    <aside class="flex w-65 flex-col overflow-y-auto border-r border-gray-300 bg-white p-5">
+    <aside class="flex w-60 flex-col overflow-y-auto border-r border-gray-300 bg-white p-5">
       <div class="mb-5">
         <div class="mb-2.5 flex items-center text-sm font-bold">
           <el-icon class="mr-1"><CircleCheck /></el-icon> 选择
@@ -176,12 +190,12 @@ const editComponentsMap: Record<string, unknown> = {
     <section
       class="flex flex-1 flex-col items-center overflow-y-auto bg-linear-to-br from-blue-100 to-white p-10"
     >
-      <div class="w-140 rounded bg-white p-4 text-center shadow-[0_4px_12px_rgba(0,0,0,0.05)]">
-        <div class="flex flex-col">
+      <div class="w-155 rounded bg-white p-10 text-center shadow-[0_4px_12px_rgba(0,0,0,0.05)]">
+        <div class="flex flex-col" ref="draggableElement">
           <div
             v-for="item in dataStore.survey"
             :key="item.id"
-            class="relative cursor-pointer p-4 transition ease-out hover:shadow-lg"
+            class="transition-shadow-scale relative cursor-pointer p-4 hover:scale-102 hover:shadow-lg"
             :class="{
               'border-2 border-blue-400 shadow-lg': activeSurveyId === item.id,
             }"
@@ -205,7 +219,7 @@ const editComponentsMap: Record<string, unknown> = {
     </section>
 
     <!-- 右侧编辑区 -->
-    <aside class="flex w-80 flex-col overflow-y-auto border-l border-gray-300 bg-white p-6">
+    <aside class="flex w-70 flex-col overflow-y-auto border-l border-gray-300 bg-white p-4">
       <div
         v-if="activeStore && activeStore.editComponents && activeStore.editComponents.length > 0"
         class="flex flex-col gap-3"
@@ -223,3 +237,20 @@ const editComponentsMap: Record<string, unknown> = {
     </aside>
   </main>
 </template>
+
+<style scoped>
+.ghost {
+  opacity: 0.5;
+  background: #c8ebfb;
+}
+
+.transition-shadow-scale {
+  transition:
+    scale 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.transition-shadow-scale:active {
+  transition: none;
+}
+</style>
