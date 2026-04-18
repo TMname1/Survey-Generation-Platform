@@ -130,7 +130,6 @@ export const useDataStore = defineStore('data', () => {
   };
 
   // 初始化问卷标题和说明
-  // TODO: 新建一个用于该初始化的函数
   addSurvey(createRemarkTitleStore, '备注说明');
   setTimeout(() => {
     addSurvey(createRemarkCTXStore, '备注说明');

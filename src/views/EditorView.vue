@@ -37,8 +37,8 @@ import SizeSetting from '@/components/editor/SizeSetting.vue';
 import TextStyle from '@/components/editor/textStyle.vue';
 import TypeSwitchSetting from '@/components/editor/TypeSwitchSetting.vue';
 
-import TitleSetting from '@/views/materials/TitleSetting.vue';
-import DescSetting from '@/views/materials/DescSetting.vue';
+import TitleSetting from '@/components/editor/TitleSetting.vue';
+import DescSetting from '@/components/editor/DescSetting.vue';
 
 const activeComponent = shallowRef<unknown>(null);
 const activeComponentName = ref<string>('');
@@ -176,7 +176,7 @@ const editComponentsMap: Record<string, unknown> = {
     <section
       class="flex flex-1 flex-col items-center overflow-y-auto bg-linear-to-br from-blue-100 to-white p-10"
     >
-      <div class="rounded bg-white p-4 text-center shadow-[0_4px_12px_rgba(0,0,0,0.05)]">
+      <div class="w-140 rounded bg-white p-4 text-center shadow-[0_4px_12px_rgba(0,0,0,0.05)]">
         <div class="flex flex-col">
           <div
             v-for="item in dataStore.survey"

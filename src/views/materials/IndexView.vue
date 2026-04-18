@@ -24,8 +24,8 @@ import TextStyle from '@/components/editor/textStyle.vue';
 import TypeSwitchSetting from '@/components/editor/TypeSwitchSetting.vue';
 
 // Local materials components
-import TitleSetting from './TitleSetting.vue';
-import DescSetting from './DescSetting.vue';
+import TitleSetting from '@/components/editor/TitleSetting.vue';
+import DescSetting from '@/components/editor/DescSetting.vue';
 
 const activeComponent = shallowRef<unknown>(null);
 const activeComponentName = ref<string>('');

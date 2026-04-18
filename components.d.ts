@@ -16,6 +16,7 @@ declare module 'vue' {
     CenterSetting: typeof import('./src/components/editor/CenterSetting.vue')['default']
     ColorSetting: typeof import('./src/components/editor/ColorSetting.vue')['default']
     DateComponent: typeof import('./src/components/advanced/DateComponent.vue')['default']
+    DescSetting: typeof import('./src/components/editor/DescSetting.vue')['default']
     DropdownChoice: typeof import('./src/components/choice/DropdownChoice.vue')['default']
     ElAvatar: typeof import('element-plus/es')['ElAvatar']
     ElButton: typeof import('element-plus/es')['ElButton']
@@ -47,6 +48,7 @@ declare module 'vue' {
     SizeSetting: typeof import('./src/components/editor/SizeSetting.vue')['default']
     TextInput: typeof import('./src/components/input/textInput.vue')['default']
     TextStyle: typeof import('./src/components/editor/textStyle.vue')['default']
+    TitleSetting: typeof import('./src/components/editor/TitleSetting.vue')['default']
     TypeSwitchSetting: typeof import('./src/components/editor/TypeSwitchSetting.vue')['default']
   }
 }
