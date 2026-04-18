@@ -96,11 +96,13 @@ const draggableElement = ref();
 useDraggable(draggableElement, ref([...dataStore.survey]), {
   animation: 150,
   ghostClass: 'ghost',
-  onStart() {
-    console.log('start');
-  },
-  onUpdate() {
-    console.log('update');
+  onUpdate({ oldIndex, newIndex }) {
+    function moveElement(arr: SurveyItem[], fromIndex: number, toIndex: number) {
+      const element = arr.splice(fromIndex, 1)[0] as SurveyItem;
+      arr.splice(toIndex, 0, element);
+      return arr;
+    }
+    moveElement(dataStore.survey, oldIndex!, newIndex!);
   },
 });
 </script>
@@ -142,7 +144,7 @@ useDraggable(draggableElement, ref([...dataStore.survey]), {
         </div>
       </div>
     </aside>
-    <aside class="flex w-65 flex-col overflow-y-auto border-r border-gray-300 bg-white p-5">
+    <aside class="flex w-60 flex-col overflow-y-auto border-r border-gray-300 bg-white p-5">
       <div class="mb-5">
         <div class="mb-2.5 flex items-center text-sm font-bold">
           <el-icon class="mr-1"><CircleCheck /></el-icon> 选择
@@ -188,7 +190,7 @@ useDraggable(draggableElement, ref([...dataStore.survey]), {
     <section
       class="flex flex-1 flex-col items-center overflow-y-auto bg-linear-to-br from-blue-100 to-white p-10"
     >
-      <div class="w-140 rounded bg-white p-4 text-center shadow-[0_4px_12px_rgba(0,0,0,0.05)]">
+      <div class="w-155 rounded bg-white p-10 text-center shadow-[0_4px_12px_rgba(0,0,0,0.05)]">
         <div class="flex flex-col" ref="draggableElement">
           <div
             v-for="item in dataStore.survey"
@@ -217,7 +219,7 @@ useDraggable(draggableElement, ref([...dataStore.survey]), {
     </section>
 
     <!-- 右侧编辑区 -->
-    <aside class="flex w-80 flex-col overflow-y-auto border-l border-gray-300 bg-white p-6">
+    <aside class="flex w-70 flex-col overflow-y-auto border-l border-gray-300 bg-white p-4">
       <div
         v-if="activeStore && activeStore.editComponents && activeStore.editComponents.length > 0"
         class="flex flex-col gap-3"
