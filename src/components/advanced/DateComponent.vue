@@ -1,8 +1,14 @@
 <script lang="ts" setup>
 import { computed, ref } from 'vue';
-import { useDateStore } from '@/stores/advanced/date';
 
-const store = useDateStore();
+const props = defineProps({
+  data: {
+    type: Object,
+    required: true,
+  },
+});
+
+const store = props.data;
 
 const containerStyle = computed(() => ({
   textAlign: store.position === '居中对齐' ? ('center' as const) : ('left' as const),
@@ -25,7 +31,7 @@ const dateVal = ref('');
 </script>
 
 <template>
-  <div :style="containerStyle">
+  <div :style="containerStyle" class="wrap-anywhere">
     <h1 class="mb-5" :style="titleStyle">{{ store.title }}</h1>
     <p class="mb-5" :style="descStyle">{{ store.desc }}</p>
     <el-date-picker v-model="dateVal" type="date" placeholder="选择日期" />

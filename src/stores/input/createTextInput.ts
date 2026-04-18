@@ -1,47 +1,49 @@
 import { ref } from 'vue';
 
-export const createRemarkStore = () => {
+export const createTextInputStore = () => {
   const editComponents = ref([
-    'TypeSwitchSetting',
+    'textStyle',
+    'TitleSetting',
     'DescSetting',
-    'CenterSetting',
     'SizeSetting',
+    'ColorSetting',
     'BoldSetting',
     'ItalicSetting',
-    'ColorSetting',
+    'CenterSetting',
   ]);
-  const type = ref('备注说明');
-  const remarkType = ref<'title' | 'paragraph'>('paragraph');
-  const title = ref('默认标题内容');
-  const desc = ref('备注说明');
+  const style = ref<'多行文本' | '单行文本'>('多行文本');
+
+  const title = ref('文本输入题默认标题');
+  const desc = ref('文本输入题默认描述');
 
   const position = ref<'左对齐' | '居中对齐'>('左对齐');
   const titleSize = ref<22 | 20 | 18>(22);
+  const titleSizes = [22, 20, 18];
   const descSize = ref<16 | 14 | 12>(16);
+  const descSizes = [16, 14, 12];
 
-  const titleWeight = ref<'加粗' | '正常'>('正常');
+  const titleWeight = ref<'加粗' | '正常'>('加粗');
   const descWeight = ref<'加粗' | '正常'>('正常');
   const titleItalic = ref<'斜体' | '正常'>('正常');
-  const descItalic = ref<'斜体' | '正常'>('正常');
   const titleColor = ref('#000');
   const descColor = ref('#909399');
 
   return {
-    type,
+    style,
     editComponents,
-    remarkType,
     title,
     desc,
     position,
     titleSize,
+    titleSizes,
     descSize,
+    descSizes,
     titleWeight,
     descWeight,
     titleItalic,
-    descItalic,
     titleColor,
     descColor,
   };
 };
 
-export type createRemarkStoreType = typeof createRemarkStore;
+export type createTextInputStoreType = typeof createTextInputStore;

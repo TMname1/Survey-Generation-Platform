@@ -1,9 +1,14 @@
 <script lang="ts" setup>
-import { computed } from 'vue';
-import { useTextInputStore } from '@/stores/input/textInput';
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 
-const store = useTextInputStore();
+const props = defineProps({
+  data: {
+    type: Object,
+    required: true,
+  },
+});
+
+const store = props.data;
 
 const containerStyle = computed(() => ({
   textAlign: store.position === '居中对齐' ? ('center' as const) : ('left' as const),
@@ -26,7 +31,7 @@ const inputVal = ref('');
 </script>
 
 <template>
-  <div :style="containerStyle">
+  <div :style="containerStyle" class="wrap-anywhere">
     <h1 class="mb-5" :style="titleStyle">{{ store.title }}</h1>
     <p class="mb-5" :style="descStyle">{{ store.desc }}</p>
     <el-input

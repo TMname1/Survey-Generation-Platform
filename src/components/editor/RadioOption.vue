@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { inject, type Ref } from 'vue';
 import { Delete } from '@element-plus/icons-vue';
-import type { SurveyItem } from '@/stores/index.ts';
+import type { SurveyItem } from '@/stores/survey.ts';
 
 const store = inject<Ref<SurveyItem>>('activeStore')!;
 
@@ -28,7 +28,7 @@ const removeOption = (index: number | string) => {
 </script>
 
 <template>
-  <div class="flex flex-col gap-2.5" v-if="store.options">
+  <div class="flex flex-col gap-2.5 wrap-anywhere" v-if="store.options">
     <div v-for="(option, index) in store.options" :key="index" class="flex items-center gap-2.5">
       <el-input v-model="store.options[index]" placeholder="请输入选项内容" />
       <el-button type="danger" circle plain @click="removeOption(index)">

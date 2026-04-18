@@ -11,7 +11,7 @@ import {
   Message,
 } from '@element-plus/icons-vue';
 
-import { useDataStore, type SurveyItem } from '@/stores/index.ts';
+import { useDataStore, type SurveyItem } from '@/stores/survey.ts';
 import { useMaterialsStore } from '@/stores/materials';
 
 const dataStore = useDataStore();
@@ -25,7 +25,8 @@ import DropdownChoice from '@/components/choice/DropdownChoice.vue';
 import RateComponent from '@/components/advanced/RateComponent.vue';
 import DateComponent from '@/components/advanced/DateComponent.vue';
 import TextInput from '@/components/input/textInput.vue';
-import RemarkComponent from '@/components/remarks/RemarkComponent.vue';
+import TitleComponent from '@/components/remarks/TitleComponent.vue';
+import ParagraphComponent from '@/components/remarks/ParagraphComponent.vue';
 
 // Import edit components
 import BoldSetting from '@/components/editor/BoldSetting.vue';
@@ -35,10 +36,9 @@ import ItalicSetting from '@/components/editor/ItalicSetting.vue';
 import RadioOption from '@/components/editor/RadioOption.vue';
 import SizeSetting from '@/components/editor/SizeSetting.vue';
 import TextStyle from '@/components/editor/textStyle.vue';
-import TypeSwitchSetting from '@/components/editor/TypeSwitchSetting.vue';
 
-import TitleSetting from '@/views/materials/TitleSetting.vue';
-import DescSetting from '@/views/materials/DescSetting.vue';
+import TitleSetting from '@/components/editor/TitleSetting.vue';
+import DescSetting from '@/components/editor/DescSetting.vue';
 
 const activeComponent = shallowRef<unknown>(null);
 const activeComponentName = ref<string>('');
@@ -71,7 +71,8 @@ const componentMap: Record<string, unknown> = {
   评价: RateComponent,
   日期: DateComponent,
   文本输入: TextInput,
-  备注说明: RemarkComponent,
+  备注标题: TitleComponent,
+  备注段落: ParagraphComponent,
 };
 
 provide('componentMap', componentMap);
@@ -89,7 +90,6 @@ const editComponentsMap: Record<string, unknown> = {
   BoldSetting,
   ItalicSetting,
   CenterSetting,
-  TypeSwitchSetting,
 };
 </script>
 
@@ -176,17 +176,15 @@ const editComponentsMap: Record<string, unknown> = {
     <section
       class="flex flex-1 flex-col items-center overflow-y-auto bg-linear-to-br from-blue-100 to-white p-10"
     >
-      <div class="rounded bg-white p-4 text-center shadow-[0_4px_12px_rgba(0,0,0,0.05)]">
-        <h1 class="mb-7.5 text-2xl text-gray-800">问卷标题</h1>
-        <p class="mb-8 text-left text-sm leading-[1.8] text-gray-600">
-          为了给您提供更好的服务，希望能您抽出几分钟时间，将您的感受和建议告诉我们，我们非常重视每位用户的宝贵意见，期待您的参与！现在我们就马上开始吧！
-        </p>
-        <div class="flex flex-col gap-4">
+      <div class="w-140 rounded bg-white p-4 text-center shadow-[0_4px_12px_rgba(0,0,0,0.05)]">
+        <div class="flex flex-col">
           <div
             v-for="item in dataStore.survey"
             :key="item.id"
-            class="relative cursor-pointer border border-transparent p-4 transition ease-out hover:shadow-lg"
-            :class="{ 'shadow-lg': activeSurveyId === item.id }"
+            class="relative cursor-pointer p-4 transition ease-out hover:shadow-lg"
+            :class="{
+              'border-2 border-blue-400 shadow-lg': activeSurveyId === item.id,
+            }"
             @click="setActiveSurvey(item)"
           >
             <div

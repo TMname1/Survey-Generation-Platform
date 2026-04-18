@@ -1,8 +1,14 @@
 <script lang="ts" setup>
 import { computed, ref } from 'vue';
-import { useRateStore } from '@/stores/advanced/rate';
 
-const store = useRateStore();
+const props = defineProps({
+  data: {
+    type: Object,
+    required: true,
+  },
+});
+
+const store = props.data;
 
 const containerStyle = computed(() => ({
   textAlign: store.position === '居中对齐' ? ('center' as const) : ('left' as const),
@@ -25,7 +31,7 @@ const rateVal = ref(0);
 </script>
 
 <template>
-  <div :style="containerStyle">
+  <div :style="containerStyle" class="wrap-anywhere">
     <h1 class="mb-5" :style="titleStyle">{{ store.title }}</h1>
     <p class="mb-5" :style="descStyle">{{ store.desc }}</p>
     <el-rate v-model="rateVal" allow-half />

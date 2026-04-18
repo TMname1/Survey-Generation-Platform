@@ -2,14 +2,7 @@
 import { provide, shallowRef, ref, computed } from 'vue';
 import router from '@/router/index.ts';
 import { ArrowLeft, Select, Edit, Setting, Document, User, Phone } from '@element-plus/icons-vue';
-import { useSingleChoiceStore } from '@/stores/choice/singleChoice';
-import { useMultipleChoiceStore } from '@/stores/choice/multipleChoice';
-import { useDropdownChoiceStore } from '@/stores/choice/dropdownChoice';
-import { useRateStore } from '@/stores/advanced/rate';
-import { useDateStore } from '@/stores/advanced/date';
-import { useRemarkStore } from '@/stores/remarks/remark';
-
-import { useTextInputStore } from '@/stores/input/textInput';
+import { useMaterialsStore } from '@/stores/materials.ts';
 
 // Import components
 import SingleChoice from '@/components/choice/SingleChoice.vue';
@@ -18,7 +11,8 @@ import DropdownChoice from '@/components/choice/DropdownChoice.vue';
 import RateComponent from '@/components/advanced/RateComponent.vue';
 import DateComponent from '@/components/advanced/DateComponent.vue';
 import TextInput from '@/components/input/textInput.vue';
-import RemarkComponent from '@/components/remarks/RemarkComponent.vue';
+import TitleComponent from '@/components/remarks/TitleComponent.vue';
+import ParagraphComponent from '@/components/remarks/ParagraphComponent.vue';
 
 // Import materials components
 import BoldSetting from '@/components/editor/BoldSetting.vue';
@@ -28,11 +22,10 @@ import ItalicSetting from '@/components/editor/ItalicSetting.vue';
 import RadioOption from '@/components/editor/RadioOption.vue';
 import SizeSetting from '@/components/editor/SizeSetting.vue';
 import TextStyle from '@/components/editor/textStyle.vue';
-import TypeSwitchSetting from '@/components/editor/TypeSwitchSetting.vue';
 
 // Local materials components
-import TitleSetting from './TitleSetting.vue';
-import DescSetting from './DescSetting.vue';
+import TitleSetting from '@/components/editor/TitleSetting.vue';
+import DescSetting from '@/components/editor/DescSetting.vue';
 
 const activeComponent = shallowRef<unknown>(null);
 const activeComponentName = ref<string>('');
@@ -53,7 +46,8 @@ const componentMap: Record<string, unknown> = {
   评价: RateComponent,
   日期: DateComponent,
   文本输入: TextInput,
-  备注说明: RemarkComponent,
+  备注标题: TitleComponent,
+  备注段落: ParagraphComponent,
   // TODO: 完成后面
   // 图片单选题: ImageSingleChoice,
   // 图片多选题: ....
@@ -76,20 +70,22 @@ const colors = ['primary', 'success', 'warning', 'danger'];
 // const singleChoiceStore = useDataStore().createSingleChoiceStore();
 // console.log(singleChoiceStore);
 
-// import { useDataStore } from '@/stores/index.ts';
+// import { useDataStore } from '@/stores/survey.ts';
 
 // const dataStore = useDataStore();
 
 // const singleChoiceStore = dataStore.createFn.createSingleChoiceStore();
 
-const singleChoiceStore = useSingleChoiceStore();
-const multipleChoiceStore = useMultipleChoiceStore();
+const materialsStore = useMaterialsStore();
 
-const dropdownChoiceStore = useDropdownChoiceStore();
-const rateStore = useRateStore();
-const dateStore = useDateStore();
-const textInputStore = useTextInputStore();
-const remarkStore = useRemarkStore();
+const singleChoiceStore = materialsStore.materials[0]!;
+const multipleChoiceStore = materialsStore.materials[1]!;
+const dropdownChoiceStore = materialsStore.materials[2]!;
+const remarkTitleStore = materialsStore.materials[3]!;
+const remarkParagraphStore = materialsStore.materials[4]!;
+const rateStore = materialsStore.materials[5]!;
+const dateStore = materialsStore.materials[6]!;
+const textInputStore = materialsStore.materials[7]!;
 
 const activeStore = computed(() => {
   if (activeComponentName.value === '多选题') {
@@ -107,8 +103,11 @@ const activeStore = computed(() => {
   if (activeComponentName.value === '文本输入') {
     return textInputStore;
   }
-  if (activeComponentName.value === '备注说明') {
-    return remarkStore;
+  if (activeComponentName.value === '备注标题') {
+    return remarkTitleStore;
+  }
+  if (activeComponentName.value === '备注段落') {
+    return remarkParagraphStore;
   }
   // 默认为单选题或单选题 store
   return singleChoiceStore;
@@ -126,7 +125,6 @@ const editComponentsMap: Record<string, unknown> = {
   BoldSetting,
   ItalicSetting,
   CenterSetting,
-  TypeSwitchSetting,
 };
 </script>
 
