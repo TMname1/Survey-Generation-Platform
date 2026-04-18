@@ -11,6 +11,7 @@ export const createRemarkCTXStore = (text: string = '备注说明') => {
   ]);
   const type = ref('备注段落');
   const hasDescSize = ref(true);
+  const hasTitleSize = ref(false);
   const desc = ref(text);
 
   const position = ref<'左对齐' | '居中对齐'>('左对齐');
@@ -32,6 +33,7 @@ export const createRemarkCTXStore = (text: string = '备注说明') => {
     descWeight,
     descItalic,
     descColor,
+    hasTitleSize,
   };
 };
 

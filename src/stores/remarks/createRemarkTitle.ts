@@ -11,6 +11,7 @@ export const createRemarkTitleStore = () => {
   ]);
   const type = ref('备注标题');
   const hasTitleSize = ref(true);
+  const hasDescSize = ref(false);
   const title = ref('问卷标题');
 
   const position = ref<'左对齐' | '居中对齐'>('居中对齐');
@@ -32,6 +33,7 @@ export const createRemarkTitleStore = () => {
     titleWeight,
     titleItalic,
     titleColor,
+    hasDescSize,
   };
 };
 
