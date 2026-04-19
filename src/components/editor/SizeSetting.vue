@@ -7,7 +7,7 @@
         <div
           v-for="(size, index) in titleSizes"
           :key="size"
-          class="flex cursor-pointer items-center justify-center gap-1 rounded-sm border px-3 py-1.5 transition-all duration-300 hover:border-[#c6e2ff] hover:bg-[#ecf5ff] hover:text-[#409eff]"
+          class="flex cursor-pointer items-center justify-center gap-1 rounded-sm border px-2 py-1.5 transition-all duration-300 hover:border-[#c6e2ff] hover:bg-[#ecf5ff] hover:text-[#409eff]"
           :class="
             store.titleSize === size
               ? 'border-[#409eff] bg-[#ecf5ff] text-[#409eff]'
@@ -15,9 +15,7 @@
           "
           @click="store.titleSize = size"
         >
-          <div
-            :class="['h-6 w-6', 'h-5 w-5', 'h-4 w-4', 'h-3 w-3'][Math.min(index, 3)] || 'h-4 w-4'"
-          >
+          <div :class="['h-5 w-5', 'h-4 w-4', 'h-3 w-3'][Math.min(index, 3)]">
             <img src="@/assets/svg/size-title.svg" alt="标题大小" />
           </div>
         </div>
@@ -32,7 +30,7 @@
         <div
           v-for="(size, index) in descSizes"
           :key="size"
-          class="flex cursor-pointer items-center rounded-sm border px-3 py-1.5 transition-all duration-300 hover:border-[#c6e2ff] hover:bg-[#ecf5ff] hover:text-[#409eff]"
+          class="flex cursor-pointer items-center rounded-sm border px-2 py-1.5 transition-all duration-300 hover:border-[#c6e2ff] hover:bg-[#ecf5ff] hover:text-[#409eff]"
           :class="
             store.descSize === size
               ? 'border-[#409eff] bg-[#ecf5ff] text-[#409eff]'
@@ -40,9 +38,7 @@
           "
           @click="store.descSize = size"
         >
-          <div
-            :class="['h-6 w-6', 'h-5 w-5', 'h-4 w-4', 'h-3 w-3'][Math.min(index, 3)] || 'h-4 w-4'"
-          >
+          <div :class="['h-5 w-5', 'h-4 w-4', 'h-3 w-3'][Math.min(index, 3)]">
             <img src="@/assets/svg/size-title.svg" alt="描述大小" />
           </div>
         </div>
