@@ -1,22 +1,11 @@
 <script setup lang="ts">
 import { provide, shallowRef, ref, computed } from 'vue';
 import router from '@/router/index.ts';
-import {
-  ArrowLeft,
-  CircleCheck,
-  EditPen,
-  MessageBox,
-  ChatLineSquare,
-  User,
-  Message,
-} from '@element-plus/icons-vue';
-
+import { ArrowLeft } from '@element-plus/icons-vue';
+import { ElMessageBox } from 'element-plus';
 import { useDataStore, type SurveyItem } from '@/stores/survey.ts';
 import { useMaterialsStore } from '@/stores/materials';
 import { useDraggable } from 'vue-draggable-plus';
-
-// 备注组件类型（这些组件不需要序号）
-const remarkTypes = ['备注标题', '备注段落'];
 
 // Import components
 import ButtonSelection from '@/components/ButtonSelection.vue';
@@ -77,18 +66,21 @@ const componentMap: Record<string, unknown> = {
   备注段落: ParagraphComponent,
 };
 
+// 备注组件类型（这些组件不需要序号）
+const remarkTypes = ['备注标题', '备注段落'];
+
 // 计算每个组件的序号（只给非备注组件编号）
 const questionIndices = computed(() => {
   const indices: Record<number, number> = {};
   let questionCount = 0;
-  
+
   dataStore.survey.forEach((item) => {
     if (!remarkTypes.includes(item.type)) {
       questionCount++;
       indices[item.id] = questionCount;
     }
   });
-  
+
   return indices;
 });
 
@@ -212,7 +204,7 @@ useDraggable(draggableElement, ref([...dataStore.survey]), {
           <div
             v-for="item in dataStore.survey"
             :key="item.id"
-            class="transition-shadow-scale relative cursor-pointer p-4 hover:scale-102 hover:shadow-lg"
+            class="transition-shadow-scale relative cursor-pointer p-6 hover:scale-102 hover:shadow-lg"
             :class="{
               'border-2 border-blue-400 shadow-lg': activeSurveyId === item.id,
             }"
@@ -220,18 +212,25 @@ useDraggable(draggableElement, ref([...dataStore.survey]), {
           >
             <div
               class="absolute -top-2.5 -right-2.5 flex h-5 w-5 cursor-pointer items-center justify-center rounded-2xl border bg-red-400 text-sm text-white hover:bg-red-300"
-              @click="
-                dataStore.removeSurvey(item.id);
-                activeStore = null;
-                setActiveSurvey(item);
+              @click.stop="
+                ElMessageBox.confirm('确定要删除该题目吗？', '提示', {
+                  confirmButtonText: '确定',
+                  cancelButtonText: '取消',
+                  type: 'warning',
+                })
+                  .then(() => {
+                    dataStore.removeSurvey(item.id);
+                    activeStore = null;
+                  })
+                  .catch(() => {})
               "
               v-show="activeSurveyId === item.id"
             >
               x
             </div>
-            <component 
-              :is="componentMap[item.type]" 
-              :data="item" 
+            <component
+              :is="componentMap[item.type]"
+              :data="item"
               :question-index="questionIndices[item.id]"
             />
           </div>
