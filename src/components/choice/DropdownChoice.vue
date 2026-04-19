@@ -33,6 +33,7 @@ const titleStyle = computed(() => ({
 const descStyle = computed(() => ({
   fontSize: `${props.data.descSize}px`,
   fontWeight: props.data.descWeight === '加粗' ? 'bold' : 'normal',
+  fontStyle: props.data.descItalic === '斜体' ? 'italic' : 'normal',
   color: props.data.descColor,
 }));
 

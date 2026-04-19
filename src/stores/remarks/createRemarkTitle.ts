@@ -20,6 +20,7 @@ export const createRemarkTitleStore = () => {
 
   const titleWeight = ref<'加粗' | '正常'>('正常');
   const titleItalic = ref<'斜体' | '正常'>('正常');
+  const descItalic = ref<'斜体' | '正常'>('正常');
   const titleColor = ref('#000');
 
   return {
@@ -32,6 +33,7 @@ export const createRemarkTitleStore = () => {
     titleSizes,
     titleWeight,
     titleItalic,
+    descItalic,
     titleColor,
     hasDescSize,
   };
