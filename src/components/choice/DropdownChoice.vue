@@ -46,7 +46,7 @@ const handleCommand = (command: string) => {
 <template>
   <div :style="containerStyle" class="wrap-anywhere">
     <h1 class="mb-5" :style="titleStyle">
-      <span v-if="formattedIndex" class="mr-2 text-black font-bold">{{ formattedIndex }}.</span>
+      <span v-if="formattedIndex" class="mr-2 font-bold text-black">{{ formattedIndex }}.</span>
       {{ data.title }}
     </h1>
     <p class="mb-5" :style="descStyle">{{ data.desc }}</p>
