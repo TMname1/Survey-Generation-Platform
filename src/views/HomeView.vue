@@ -9,6 +9,7 @@ import { registerUser } from '@/apis/register';
 const router = useRouter();
 const currentUsername = ref('');
 const dialogFormVisible = ref(false);
+const dialogMode = ref<'login' | 'register'>('login');
 const loginFormRef = ref<FormInstance>();
 
 const loginForm = reactive({
@@ -39,16 +40,23 @@ const handleLogin = async () => {
   }
 
   // Show dialog
+  dialogMode.value = 'login';
   loginForm.username = '';
   loginForm.password = '';
   dialogFormVisible.value = true;
 };
 
-const confirmLogin = async () => {
+const handleRegister = () => {
+  dialogMode.value = 'register';
+  loginForm.username = '';
+  loginForm.password = '';
+  dialogFormVisible.value = true;
+};
+
+const confirmAuth = async () => {
   if (!loginFormRef.value) return;
 
   try {
-    // Development环境会有warning的控制台输出，production环境不会有
     await loginFormRef.value.validate();
   } catch {
     return;
@@ -56,27 +64,37 @@ const confirmLogin = async () => {
 
   const { username, password } = loginForm;
   try {
-    const loginRes = await loginUser(username, password);
+    if (dialogMode.value === 'login') {
+      const loginRes = await loginUser(username, password);
 
-    if (loginRes.error === '密码错误') {
-      ElMessage.error('密码错误');
-      return;
-    }
+      if (loginRes.error) {
+        ElMessage.error(loginRes.error);
+        return;
+      }
 
-    if (loginRes.ok) {
-      ElMessage.success(loginRes.msg || '登录成功！');
-      currentUsername.value = username;
-      dialogFormVisible.value = false;
-    } else {
-      // 尝试注册
-      const regRes = await registerUser(username, password);
-
-      if (regRes.ok) {
-        ElMessage.success('注册并登录成功！');
+      if (loginRes.ok) {
+        ElMessage.success(loginRes.msg || '登录成功！');
         currentUsername.value = username;
         dialogFormVisible.value = false;
       } else {
-        ElMessage.error(regRes.msg || '登录或注册失败');
+        ElMessage.error(loginRes.msg || '登录失败');
+      }
+    } else {
+      const regRes = await registerUser(username, password);
+
+      if (regRes.ok) {
+        ElMessage.success('注册成功，自动登录中...');
+        const loginRes = await loginUser(username, password);
+        if (loginRes.ok) {
+          ElMessage.success('登录成功！');
+          currentUsername.value = username;
+          dialogFormVisible.value = false;
+        } else {
+          ElMessage.error('自动登录失败，请手动登录');
+          dialogMode.value = 'login';
+        }
+      } else {
+        ElMessage.error(regRes.msg || '注册失败');
       }
     }
   } catch (err) {
@@ -108,6 +126,9 @@ const tableData = [
         <el-button type="info" :icon="User" @click="handleLogin">
           {{ currentUsername || '登录' }}
         </el-button>
+        <el-button v-if="!currentUsername" type="warning" :icon="User" @click="handleRegister">
+          注册
+        </el-button>
       </div>
 
       <div class="w-full overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-slate-200">
@@ -129,8 +150,8 @@ const tableData = [
       </div>
     </div>
 
-    <!-- 登录对话框 -->
-    <el-dialog v-model="dialogFormVisible" title="用户登录(自动注册)" width="500">
+    <!-- 登录/注册对话框 -->
+    <el-dialog v-model="dialogFormVisible" :title="dialogMode === 'login' ? '用户登录' : '用户注册'" width="500">
       <el-form
         ref="loginFormRef"
         :model="loginForm"
@@ -147,14 +168,14 @@ const tableData = [
             type="password"
             placeholder="请输入密码"
             autocomplete="off"
-            @keyup.enter="confirmLogin"
+            @keyup.enter="confirmAuth"
           />
         </el-form-item>
       </el-form>
       <template #footer>
         <div class="dialog-footer">
           <el-button @click="dialogFormVisible = false">取消</el-button>
-          <el-button type="primary" @click="confirmLogin">确认</el-button>
+          <el-button type="primary" @click="confirmAuth">确认</el-button>
         </div>
       </template>
     </el-dialog>
