@@ -6,9 +6,19 @@ const props = defineProps({
     type: Object,
     required: true,
   },
+  questionIndex: {
+    type: Number,
+    default: undefined,
+  },
 });
 
-const store = props.data;
+// 格式化序号为两位数 (01, 02, ..., 10, 11)
+const formattedIndex = computed(() => {
+  if (props.questionIndex === undefined) return '';
+  return props.questionIndex.toString().padStart(2, '0');
+});
+
+  const store = props.data;
 
 const containerStyle = computed(() => ({
   textAlign: store.position === '居中对齐' ? ('center' as const) : ('left' as const),
@@ -32,7 +42,10 @@ const inputVal = ref('');
 
 <template>
   <div :style="containerStyle" class="wrap-anywhere">
-    <h1 class="mb-5" :style="titleStyle">{{ store.title }}</h1>
+    <h1 class="mb-5" :style="titleStyle">
+      <span v-if="formattedIndex" class="mr-2 text-black font-bold">{{ formattedIndex }}.</span>
+      {{ store.title }}
+    </h1>
     <p class="mb-5" :style="descStyle">{{ store.desc }}</p>
     <el-input
       v-model="inputVal"

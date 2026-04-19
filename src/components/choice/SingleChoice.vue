@@ -6,6 +6,16 @@ const props = defineProps({
     type: Object,
     required: true,
   },
+  questionIndex: {
+    type: Number,
+    default: undefined,
+  },
+});
+
+// 格式化序号为两位数 (01, 02, ..., 10, 11)
+const formattedIndex = computed(() => {
+  if (props.questionIndex === undefined) return '';
+  return props.questionIndex.toString().padStart(2, '0');
 });
 
 const containerStyle = computed(() => ({
@@ -27,7 +37,10 @@ const descStyle = computed(() => ({
 </script>
 <template>
   <div :style="containerStyle" class="wrap-anywhere">
-    <h1 class="mb-5" :style="titleStyle">{{ data.title }}</h1>
+    <h1 class="mb-5" :style="titleStyle">
+      <span v-if="formattedIndex" class="mr-2 font-bold text-black">{{ formattedIndex }}.</span>
+      {{ data.title }}
+    </h1>
     <p class="mb-5" :style="descStyle">{{ data.desc }}</p>
     <el-radio-group>
       <el-radio v-for="(opt, index) in data.options" :key="index" :label="opt" :value="opt">{{
