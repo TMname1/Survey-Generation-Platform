@@ -22,6 +22,7 @@ export const createDateStore = () => {
   const titleWeight = ref<'加粗' | '正常'>('加粗');
   const descWeight = ref<'加粗' | '正常'>('正常');
   const titleItalic = ref<'斜体' | '正常'>('正常');
+  const descItalic = ref<'斜体' | '正常'>('正常');
   const titleColor = ref('#000');
   const descColor = ref('#909399');
 
@@ -37,6 +38,7 @@ export const createDateStore = () => {
     titleWeight,
     descWeight,
     titleItalic,
+    descItalic,
     titleColor,
     descColor,
   };
