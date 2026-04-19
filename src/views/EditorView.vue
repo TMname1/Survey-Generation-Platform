@@ -15,6 +15,9 @@ import { useDataStore, type SurveyItem } from '@/stores/survey.ts';
 import { useMaterialsStore } from '@/stores/materials';
 import { useDraggable } from 'vue-draggable-plus';
 
+// 备注组件类型（这些组件不需要序号）
+const remarkTypes = ['备注标题', '备注段落'];
+
 // Import components
 import ButtonSelection from '@/components/ButtonSelection.vue';
 import SingleChoice from '@/components/choice/SingleChoice.vue';
@@ -39,6 +42,8 @@ import DescSetting from '@/components/editor/DescSetting.vue';
 
 const activeComponent = shallowRef<unknown>(null);
 const activeComponentName = ref<string>('');
+const dataStore = useDataStore();
+const materialsStore = useMaterialsStore();
 
 const activeStore = ref<SurveyItem | null>(null);
 const activeSurveyId = computed(() => activeStore.value?.id);
@@ -72,6 +77,21 @@ const componentMap: Record<string, unknown> = {
   备注段落: ParagraphComponent,
 };
 
+// 计算每个组件的序号（只给非备注组件编号）
+const questionIndices = computed(() => {
+  const indices: Record<number, number> = {};
+  let questionCount = 0;
+  
+  dataStore.survey.forEach((item) => {
+    if (!remarkTypes.includes(item.type)) {
+      questionCount++;
+      indices[item.id] = questionCount;
+    }
+  });
+  
+  return indices;
+});
+
 provide('componentMap', componentMap);
 
 provide('activeStore', activeStore);
@@ -88,9 +108,6 @@ const editComponentsMap: Record<string, unknown> = {
   ItalicSetting,
   CenterSetting,
 };
-
-const dataStore = useDataStore();
-const materialsStore = useMaterialsStore();
 
 const draggableElement = ref();
 useDraggable(draggableElement, ref([...dataStore.survey]), {
@@ -212,7 +229,11 @@ useDraggable(draggableElement, ref([...dataStore.survey]), {
             >
               x
             </div>
-            <component :is="componentMap[item.type]" :data="item" />
+            <component 
+              :is="componentMap[item.type]" 
+              :data="item" 
+              :question-index="questionIndices[item.id]"
+            />
           </div>
         </div>
       </div>
