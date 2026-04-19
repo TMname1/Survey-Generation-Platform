@@ -109,11 +109,11 @@ export const useDataStore = defineStore('data', () => {
       hasTitleSize:
         'hasTitleSize' in created
           ? unref((created as Record<string, unknown>).hasTitleSize as boolean)
-          : false,
+          : true,
       hasDescSize:
         'hasDescSize' in created
           ? unref((created as Record<string, unknown>).hasDescSize as boolean)
-          : false,
+          : true,
       titleWeight:
         'titleWeight' in created
           ? unref((created as Record<string, unknown>).titleWeight as string)
