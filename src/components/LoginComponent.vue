@@ -79,7 +79,7 @@ const confirmAuth = throttle(async () => {
 
       if (loginRes.ok) {
         ElMessage.success(loginRes.msg || '登录成功！');
-        userStore.setUsername(username);
+        userStore.useJWT(loginRes.authorization);
         dialogFormVisible.value = false;
       } else {
         ElMessage.error(loginRes.msg || '登录失败');
@@ -90,9 +90,10 @@ const confirmAuth = throttle(async () => {
       if (regRes.ok) {
         ElMessage.success('注册成功，自动登录中...');
         const loginRes = await loginUser(username, password);
+
         if (loginRes.ok) {
-          ElMessage.success('登录成功！');
-          userStore.setUsername(username);
+          ElMessage.success('自动登录成功！');
+          userStore.useJWT(loginRes.authorization);
           dialogFormVisible.value = false;
         } else {
           ElMessage.error('自动登录失败，请手动登录');

@@ -1,11 +1,13 @@
-export const loginUser = async (username: string, password: string) => {
+export const loginUser = async (username?: string, password?: string, authorization?: string) => {
   const headers = new Headers();
   headers.append('Content-Type', 'application/json');
+
+  const body = authorization ? { authorization } : { username, password };
 
   const requestOptions = {
     method: 'POST',
     headers,
-    body: JSON.stringify({ username, password }),
+    body: JSON.stringify(body),
     redirect: 'follow' as RequestRedirect,
   };
 
