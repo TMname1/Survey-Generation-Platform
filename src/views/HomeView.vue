@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { Edit, Plus } from '@element-plus/icons-vue';
 import { useRouter } from 'vue-router';
+import LoginComponent from '@/components/LoginComponent.vue';
 
 const router = useRouter();
 
@@ -19,11 +20,16 @@ const tableData = [
     <div class="mx-auto flex w-full max-w-6xl flex-col items-center gap-8">
       <h1 class="text-center text-3xl font-semibold tracking-wider text-slate-900">问卷系统</h1>
 
-      <div class="flex w-full items-center justify-start gap-4">
-        <el-button type="primary" :icon="Plus" @click="router.push('/editor')">创建问卷</el-button>
-        <el-button type="success" :icon="Edit" @click="router.push('/editorMaterials')">
-          自定义组件
-        </el-button>
+      <div class="flex w-full items-center justify-between">
+        <div class="flex gap-4">
+          <el-button type="primary" :icon="Plus" @click="router.push('/editor')"
+            >创建问卷</el-button
+          >
+          <el-button type="success" :icon="Edit" @click="router.push('/editorMaterials')">
+            自定义组件
+          </el-button>
+        </div>
+        <LoginComponent :gapVal="'gap-4'" />
       </div>
 
       <div class="w-full overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-slate-200">

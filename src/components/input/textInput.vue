@@ -18,7 +18,7 @@ const formattedIndex = computed(() => {
   return props.questionIndex.toString().padStart(2, '0');
 });
 
-  const store = props.data;
+const store = props.data;
 
 const containerStyle = computed(() => ({
   textAlign: store.position === '居中对齐' ? ('center' as const) : ('left' as const),
@@ -44,7 +44,7 @@ const inputVal = ref('');
 <template>
   <div :style="containerStyle" class="wrap-anywhere">
     <h1 class="mb-5" :style="titleStyle">
-      <span v-if="formattedIndex" class="mr-2 text-black font-bold">{{ formattedIndex }}.</span>
+      <span v-if="formattedIndex" class="mr-2 font-bold text-black">{{ formattedIndex }}.</span>
       {{ store.title }}
     </h1>
     <p class="mb-5" :style="descStyle">{{ store.desc }}</p>

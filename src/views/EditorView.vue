@@ -17,6 +17,7 @@ import DateComponent from '@/components/advanced/DateComponent.vue';
 import TextInput from '@/components/input/textInput.vue';
 import TitleComponent from '@/components/remarks/TitleComponent.vue';
 import ParagraphComponent from '@/components/remarks/ParagraphComponent.vue';
+import LoginComponent from '@/components/LoginComponent.vue';
 
 // Import edit components
 import BoldSetting from '@/components/editor/BoldSetting.vue';
@@ -127,12 +128,8 @@ useDraggable(draggableElement, ref([...dataStore.survey]), {
         <el-button type="success">保存问卷</el-button>
       </div>
     </div>
-    <div class="flex h-full w-16 items-center justify-center border-l border-gray-300">
-      <el-avatar
-        class="border-2 border-white shadow-[0_4px_12px_rgba(0,0,0,0.12)] transition-transform duration-500 hover:rotate-360"
-        :size="42"
-        src="https://avatars.githubusercontent.com/u/84985340"
-      />
+    <div class="flex h-full items-center justify-center border-l border-gray-300 px-4">
+      <LoginComponent />
     </div>
   </nav>
 
