@@ -101,11 +101,11 @@ const createSurveyHandle = () => {
           <el-table-column label="操作" min-width="140">
             <template #default="scope">
               <div class="flex items-center gap-3">
-                <el-link type="primary" underline="never">查看问卷</el-link>
-                <el-link type="warning" underline="never" @click="editSurveyHandle(scope.row)"
+                <el-link type="primary" :underline="false" @click="router.push('/preview/' + scope.row.uuid)">查看问卷</el-link>
+                <el-link type="warning" :underline="false" @click="editSurveyHandle(scope.row)"
                   >编辑</el-link
                 >
-                <el-link type="danger" underline="never">删除</el-link>
+                <el-link type="danger" :underline="false">删除</el-link>
               </div>
             </template>
           </el-table-column>
