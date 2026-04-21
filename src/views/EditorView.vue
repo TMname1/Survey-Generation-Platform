@@ -8,6 +8,8 @@ import { useMaterialsStore } from '@/stores/materials';
 import { useDraggable } from 'vue-draggable-plus';
 import { updateSurvey } from '@/apis/updateSurvey.ts';
 import { v4 as uuidv4 } from 'uuid';
+import { throttle } from '@/utils/throttle.ts';
+import { changeSurvey } from '@/apis/changeSurvey.ts';
 
 // Import components
 import ButtonSelection from '@/components/ButtonSelection.vue';
@@ -31,7 +33,6 @@ import SizeSetting from '@/components/editor/SizeSetting.vue';
 import TextStyle from '@/components/editor/textStyle.vue';
 import TitleSetting from '@/components/editor/TitleSetting.vue';
 import DescSetting from '@/components/editor/DescSetting.vue';
-import { throttle } from '@/utils/throttle.ts';
 
 const activeComponent = shallowRef<unknown>(null);
 const activeComponentName = ref<string>('');
@@ -126,12 +127,9 @@ export type surveyInfoType = {
 };
 
 const surveyTitle = ref<string>('');
+surveyTitle.value = (dataStore.survey[dataStore.survey.length - 1]?.surveyTitle as string) || '';
 
-const _survey = dataStore.survey;
-surveyTitle.value = (_survey[_survey.length - 1]?.surveyTitle as string) || '';
-
-// TODO: 当有修改时，应该提示可以保存
-const handleSaveSurvey = throttle(async () => {
+const handleUpdateSurvey = throttle(async () => {
   const username = localStorage.getItem('username') as string;
   const authorization = localStorage.getItem('token') as string;
 
@@ -155,16 +153,28 @@ const handleSaveSurvey = throttle(async () => {
   };
 
   const { msg } = await updateSurvey(username, authorization, [...survey, surveyInfo]);
+
+  dataStore.isUpdate = true;
   ElMessage.success(msg);
 }, 1000);
 
-// TODO: 修改问卷和刚开始保存问卷分开，这样可以更好的更新updateDate
-
 const editorSurvey = computed(() => {
-  return _survey.filter((item) => {
+  return dataStore.survey.filter((item) => {
     return !item.uuid;
   });
 });
+
+const handleChangeSurvey = throttle(async () => {
+  const username = localStorage.getItem('username') as string;
+
+  // 保证uuid的对象是在最后的
+  dataStore.moveUuid();
+
+  dataStore.survey[dataStore.survey.length - 1]!.surveyTitle = surveyTitle.value;
+
+  const { msg } = await changeSurvey(username, dataStore.survey);
+  ElMessage.success(msg);
+}, 1000);
 </script>
 
 <template>
@@ -174,9 +184,11 @@ const editorSurvey = computed(() => {
         <el-button class="h-10! w-10!" :icon="ArrowLeft" circle @click="router.push('/')" />
       </div>
       <div>
-        <!-- <el-button type="danger">重置问题</el-button> -->
-        <!-- TODO: 已经存在的问卷是修改不是添加 -->
-        <el-button type="success" @click="handleSaveSurvey">保存问卷</el-button>
+        <el-button v-if="!dataStore.isUpdate" type="success" @click="handleUpdateSurvey">{{
+          '保存问卷'
+        }}</el-button>
+        <!-- TODO: 更新日期 -->
+        <el-button v-else type="success" @click="handleChangeSurvey">{{ '更新问卷' }}</el-button>
       </div>
     </div>
     <div>
@@ -285,7 +297,7 @@ const editorSurvey = computed(() => {
                     dataStore.removeSurvey(item?.id as number);
                     activeStore = null;
                   })
-                  .catch(() => {})
+                  .catch()
               "
               v-show="activeSurveyId === item?.id"
             >

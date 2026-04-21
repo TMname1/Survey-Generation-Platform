@@ -169,12 +169,35 @@ export const useDataStore = defineStore('data', () => {
 
   const isUpdate = ref(false);
 
+  const moveUuid = () => {
+    /**
+     * 自动寻找数组中唯一带有 uuid 属性的对象并移至末尾
+     * @param {Array} arr - 目标数组
+     * @returns {Array} - 修改后的原数组
+     */
+    function moveUuidToLast(arr: SurveyItem[]) {
+      // 1. 找到那个拥有 uuid 属性的对象索引
+      const index = arr.findIndex((item) => 'uuid' in item);
+
+      // 2. 如果找到了且不在末尾，执行移动
+      if (index !== -1 && index !== arr.length - 1) {
+        const [target] = arr.splice(index, 1);
+        arr.push(target as SurveyItem);
+      }
+
+      return arr;
+    }
+
+    survey.value = moveUuidToLast(survey.value);
+  };
+
   return {
     survey,
     isUpdate,
     addSurvey,
     removeSurvey,
     initSurvey,
+    moveUuid,
     createFn: {
       createSingleChoiceStore,
       createDropdownChoiceStore,

@@ -65,12 +65,14 @@ const editSurveyHandle = async (item: tableDataType) => {
   );
 
   dataStore.survey = editSurvey;
+  dataStore.isUpdate = true;
 
   router.push('/editor');
 };
 
 const createSurveyHandle = () => {
   dataStore.initSurvey();
+  dataStore.isUpdate = false;
   router.push('/editor');
 };
 </script>
