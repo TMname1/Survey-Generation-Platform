@@ -117,7 +117,7 @@ const activeStore = computed(() => {
 provide('activeStore', activeStore);
 
 const editComponentsMap: Record<string, unknown> = {
-  textStyle: TextStyle,
+  TextStyle,
   TitleSetting,
   DescSetting,
   RadioOption,

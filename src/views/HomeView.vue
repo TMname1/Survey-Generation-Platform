@@ -3,30 +3,76 @@ import { Edit, Plus } from '@element-plus/icons-vue';
 import { useRouter } from 'vue-router';
 import LoginComponent from '@/components/LoginComponent.vue';
 import { getSurvey } from '@/apis/getSurvey.ts';
-import { onBeforeMount, ref } from 'vue';
+import { onBeforeMount, ref, watch } from 'vue';
 import type { databaseSurveyType } from '@/apis/updateSurvey.ts';
+import { useUserStore } from '@/stores/user';
+import { useDataStore } from '@/stores/survey.ts';
 
 const router = useRouter();
+const userStore = useUserStore();
+
+type tableDataType = {
+  createDate: string;
+  title: string;
+  questionCount: number;
+  updateDate: string;
+  uuid: string;
+};
 
 const tableData = ref();
-onBeforeMount(async () => {
+
+const renderTableData = async () => {
   const username = localStorage.getItem('username') as string;
   const authorization = localStorage.getItem('token') as string;
 
-  if (!username || !authorization) return;
+  if (!username || !authorization) {
+    tableData.value = [];
+    return;
+  }
 
   const res = await getSurvey(username, authorization);
   tableData.value = res.map((survey: databaseSurveyType) => {
     const lastIdx = survey.length - 1;
     return {
       createDate: survey[lastIdx]?.createDate,
-      title: survey[lastIdx]?.title,
+      title: survey[lastIdx]?.surveyTitle,
       // FIXME: 它会把备注说明，这种不是题目也计算上
       questionCount: survey.length - 1,
       updateDate: survey[lastIdx]?.updateDate,
+      uuid: survey[lastIdx]?.uuid,
     };
   });
-});
+};
+
+onBeforeMount(renderTableData);
+
+watch(
+  () => userStore.token,
+  () => {
+    renderTableData();
+  },
+);
+
+const dataStore = useDataStore();
+
+const editSurveyHandle = async (item: tableDataType) => {
+  const username = localStorage.getItem('username') as string;
+  const authorization = localStorage.getItem('token') as string;
+
+  const res = await getSurvey(username, authorization);
+  const editSurvey = res.find(
+    (survey: databaseSurveyType) => survey[survey.length - 1]?.uuid === item.uuid,
+  );
+
+  dataStore.survey = editSurvey;
+
+  router.push('/editor');
+};
+
+const createSurveyHandle = () => {
+  dataStore.initSurvey();
+  router.push('/editor');
+};
 </script>
 
 <template>
@@ -36,9 +82,7 @@ onBeforeMount(async () => {
 
       <div class="flex w-full items-center justify-between">
         <div class="flex gap-4">
-          <el-button type="primary" :icon="Plus" @click="router.push('/editor')"
-            >创建问卷</el-button
-          >
+          <el-button type="primary" :icon="Plus" @click="createSurveyHandle">创建问卷</el-button>
           <el-button type="success" :icon="Edit" @click="router.push('/editorMaterials')">
             自定义组件
           </el-button>
@@ -53,10 +97,12 @@ onBeforeMount(async () => {
           <el-table-column prop="questionCount" label="题目数" min-width="120" />
           <el-table-column prop="updateDate" label="最近更新日期" min-width="160" />
           <el-table-column label="操作" min-width="140">
-            <template #default>
+            <template #default="scope">
               <div class="flex items-center gap-3">
                 <el-link type="primary" underline="never">查看问卷</el-link>
-                <el-link type="warning" underline="never">编辑</el-link>
+                <el-link type="warning" underline="never" @click="editSurveyHandle(scope.row)"
+                  >编辑</el-link
+                >
                 <el-link type="danger" underline="never">删除</el-link>
               </div>
             </template>

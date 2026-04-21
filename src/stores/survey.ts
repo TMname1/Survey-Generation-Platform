@@ -148,25 +148,33 @@ export const useDataStore = defineStore('data', () => {
   };
 
   // 初始化问卷标题和说明
-  addSurvey(createRemarkTitleStore, '备注说明');
-  setTimeout(() => {
-    addSurvey(
-      () =>
-        createRemarkCTXStore(
-          '为了给您提供更好的服务，希望您能抽出几分钟时间，将您的感受和建议告诉我们，我们非常重视每位用户的宝贵意见，期待您的参与！现在我们就马上开始吧！',
-        ),
-      '备注说明',
-    );
-  }, 100);
+  const initSurvey = () => {
+    survey.value = [];
+    addSurvey(createRemarkTitleStore, '备注说明');
+    setTimeout(() => {
+      addSurvey(
+        () =>
+          createRemarkCTXStore(
+            '为了给您提供更好的服务，希望您能抽出几分钟时间，将您的感受和建议告诉我们，我们非常重视每位用户的宝贵意见，期待您的参与！现在我们就马上开始吧！',
+          ),
+        '备注说明',
+      );
+    }, 100);
+  };
+  initSurvey();
 
   const removeSurvey = (id: number) => {
     survey.value = survey.value.filter((item) => item.id !== id);
   };
 
+  const isUpdate = ref(false);
+
   return {
     survey,
+    isUpdate,
     addSurvey,
     removeSurvey,
+    initSurvey,
     createFn: {
       createSingleChoiceStore,
       createDropdownChoiceStore,

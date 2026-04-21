@@ -7,6 +7,7 @@ import { useDataStore, type SurveyItem } from '@/stores/survey.ts';
 import { useMaterialsStore } from '@/stores/materials';
 import { useDraggable } from 'vue-draggable-plus';
 import { updateSurvey } from '@/apis/updateSurvey.ts';
+import { v4 as uuidv4 } from 'uuid';
 
 // Import components
 import ButtonSelection from '@/components/ButtonSelection.vue';
@@ -36,8 +37,6 @@ const activeComponent = shallowRef<unknown>(null);
 const activeComponentName = ref<string>('');
 const dataStore = useDataStore();
 const materialsStore = useMaterialsStore();
-
-const surveyTitle = ref<string>('');
 
 const activeStore = ref<SurveyItem | null>(null);
 const activeSurveyId = computed(() => activeStore.value?.id);
@@ -94,8 +93,7 @@ provide('componentMap', componentMap);
 provide('activeStore', activeStore);
 
 const editComponentsMap: Record<string, unknown> = {
-  // TODO: 名字改回来
-  textStyle: TextStyle,
+  TextStyle,
   TitleSetting,
   DescSetting,
   RadioOption,
@@ -123,8 +121,14 @@ useDraggable(draggableElement, ref([...dataStore.survey]), {
 export type surveyInfoType = {
   createDate: string;
   updateDate: string;
-  title: string;
+  surveyTitle: string;
+  uuid: string;
 };
+
+const surveyTitle = ref<string>('');
+
+const _survey = dataStore.survey;
+surveyTitle.value = (_survey[_survey.length - 1]?.surveyTitle as string) || '';
 
 // TODO: 当有修改时，应该提示可以保存
 const handleSaveSurvey = throttle(async () => {
@@ -136,12 +140,18 @@ const handleSaveSurvey = throttle(async () => {
     return;
   }
 
+  if (!surveyTitle.value.trim()) {
+    ElMessage.warning('问卷未命名');
+    return;
+  }
+
   const survey = useDataStore().survey;
 
   const surveyInfo: surveyInfoType = {
     createDate: new Date().toLocaleDateString('zh-CN'),
     updateDate: new Date().toLocaleDateString('zh-CN'),
-    title: surveyTitle.value,
+    surveyTitle: surveyTitle.value,
+    uuid: uuidv4(),
   };
 
   const { msg } = await updateSurvey(username, authorization, [...survey, surveyInfo]);
@@ -149,6 +159,12 @@ const handleSaveSurvey = throttle(async () => {
 }, 1000);
 
 // TODO: 修改问卷和刚开始保存问卷分开，这样可以更好的更新updateDate
+
+const editorSurvey = computed(() => {
+  return _survey.filter((item) => {
+    return !item.uuid;
+  });
+});
 </script>
 
 <template>
@@ -159,6 +175,7 @@ const handleSaveSurvey = throttle(async () => {
       </div>
       <div>
         <!-- <el-button type="danger">重置问题</el-button> -->
+        <!-- TODO: 已经存在的问卷是修改不是添加 -->
         <el-button type="success" @click="handleSaveSurvey">保存问卷</el-button>
       </div>
     </div>
@@ -171,7 +188,7 @@ const handleSaveSurvey = throttle(async () => {
         <!-- 实际输入框 -->
         <input
           v-model="surveyTitle"
-          class="absolute inset-0 h-full w-full rounded-lg border-2 bg-transparent text-center outline-none focus:border-blue-500"
+          class="absolute inset-0 h-full w-full rounded-lg border border-gray-300 bg-transparent text-center outline-none focus:border-blue-500"
           placeholder="未命名问卷"
           maxlength="60"
         />
@@ -248,13 +265,13 @@ const handleSaveSurvey = throttle(async () => {
       <div class="w-155 rounded bg-white p-10 text-center shadow-[0_4px_12px_rgba(0,0,0,0.05)]">
         <div class="flex flex-col" ref="draggableElement">
           <div
-            v-for="item in dataStore.survey"
-            :key="item.id"
+            v-for="item in editorSurvey"
+            :key="item?.id"
             class="transition-shadow-scale relative cursor-pointer p-6 hover:scale-102 hover:shadow-lg"
             :class="{
-              'border-2 border-blue-400 shadow-lg': activeSurveyId === item.id,
+              'border-2 border-blue-400 shadow-lg': activeSurveyId === item?.id,
             }"
-            @click="setActiveSurvey(item)"
+            @click="setActiveSurvey(item as SurveyItem)"
           >
             <div
               class="absolute -top-2.5 -right-2.5 flex h-5 w-5 cursor-pointer items-center justify-center rounded-2xl border bg-red-400 text-sm text-white hover:bg-red-300"
@@ -265,19 +282,19 @@ const handleSaveSurvey = throttle(async () => {
                   type: 'warning',
                 })
                   .then(() => {
-                    dataStore.removeSurvey(item.id);
+                    dataStore.removeSurvey(item?.id as number);
                     activeStore = null;
                   })
                   .catch(() => {})
               "
-              v-show="activeSurveyId === item.id"
+              v-show="activeSurveyId === item?.id"
             >
               x
             </div>
             <component
-              :is="componentMap[item.type]"
+              :is="componentMap[item?.type as string]"
               :data="item"
-              :question-index="questionIndices[item.id]"
+              :question-index="questionIndices[item?.id as number]"
             />
           </div>
         </div>

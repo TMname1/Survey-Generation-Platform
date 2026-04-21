@@ -13,6 +13,6 @@ export const getSurvey = async (username: string, authorization: string) => {
   const {
     data: { survey },
   } = await response.json();
-  console.log(survey);
+  // console.log(survey);
   return survey;
 };
