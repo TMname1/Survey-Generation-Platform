@@ -6,6 +6,7 @@ import { ElMessageBox } from 'element-plus';
 import { useDataStore, type SurveyItem } from '@/stores/survey.ts';
 import { useMaterialsStore } from '@/stores/materials';
 import { useDraggable } from 'vue-draggable-plus';
+import { updateSurvey } from '@/apis/updateSurvey.ts';
 
 // Import components
 import ButtonSelection from '@/components/ButtonSelection.vue';
@@ -29,11 +30,14 @@ import SizeSetting from '@/components/editor/SizeSetting.vue';
 import TextStyle from '@/components/editor/textStyle.vue';
 import TitleSetting from '@/components/editor/TitleSetting.vue';
 import DescSetting from '@/components/editor/DescSetting.vue';
+import { throttle } from '@/utils/throttle.ts';
 
 const activeComponent = shallowRef<unknown>(null);
 const activeComponentName = ref<string>('');
 const dataStore = useDataStore();
 const materialsStore = useMaterialsStore();
+
+const surveyTitle = ref<string>('');
 
 const activeStore = ref<SurveyItem | null>(null);
 const activeSurveyId = computed(() => activeStore.value?.id);
@@ -115,6 +119,36 @@ useDraggable(draggableElement, ref([...dataStore.survey]), {
     moveElement(dataStore.survey, oldIndex!, newIndex!);
   },
 });
+
+export type surveyInfoType = {
+  createDate: string;
+  updateDate: string;
+  title: string;
+};
+
+// TODO: 当有修改时，应该提示可以保存
+const handleSaveSurvey = throttle(async () => {
+  const username = localStorage.getItem('username') as string;
+  const authorization = localStorage.getItem('token') as string;
+
+  if (!username || !authorization) {
+    ElMessage.warning('请先登录或注册');
+    return;
+  }
+
+  const survey = useDataStore().survey;
+
+  const surveyInfo: surveyInfoType = {
+    createDate: new Date().toLocaleDateString('zh-CN'),
+    updateDate: new Date().toLocaleDateString('zh-CN'),
+    title: surveyTitle.value,
+  };
+
+  const { msg } = await updateSurvey(username, authorization, [...survey, surveyInfo]);
+  ElMessage.success(msg);
+}, 1000);
+
+// TODO: 修改问卷和刚开始保存问卷分开，这样可以更好的更新updateDate
 </script>
 
 <template>
@@ -124,8 +158,23 @@ useDraggable(draggableElement, ref([...dataStore.survey]), {
         <el-button class="h-10! w-10!" :icon="ArrowLeft" circle @click="router.push('/')" />
       </div>
       <div>
-        <el-button type="danger">重置问题</el-button>
-        <el-button type="success">保存问卷</el-button>
+        <!-- <el-button type="danger">重置问题</el-button> -->
+        <el-button type="success" @click="handleSaveSurvey">保存问卷</el-button>
+      </div>
+    </div>
+    <div>
+      <div
+        class="relative mr-6 inline-flex min-w-37.5 items-center justify-center text-lg font-bold"
+      >
+        <!-- 镜像克隆元素，用于撑开宽度，invisible隐藏文字 -->
+        <span class="invisible px-3 py-1">{{ surveyTitle || '未命名问卷' }}</span>
+        <!-- 实际输入框 -->
+        <input
+          v-model="surveyTitle"
+          class="absolute inset-0 h-full w-full rounded-lg border-2 bg-transparent text-center outline-none focus:border-blue-500"
+          placeholder="未命名问卷"
+          maxlength="60"
+        />
       </div>
     </div>
     <div class="flex h-full items-center justify-center border-l border-gray-300 px-4">

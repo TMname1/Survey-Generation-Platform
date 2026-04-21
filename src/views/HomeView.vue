@@ -2,17 +2,31 @@
 import { Edit, Plus } from '@element-plus/icons-vue';
 import { useRouter } from 'vue-router';
 import LoginComponent from '@/components/LoginComponent.vue';
+import { getSurvey } from '@/apis/getSurvey.ts';
+import { onBeforeMount, ref } from 'vue';
+import type { databaseSurveyType } from '@/apis/updateSurvey.ts';
 
 const router = useRouter();
 
-const tableData = [
-  {
-    createDate: '2026-04-12',
-    title: '用户满意度调查',
-    questionCount: 12,
-    updateDate: '2026-04-12',
-  },
-];
+const tableData = ref();
+onBeforeMount(async () => {
+  const username = localStorage.getItem('username') as string;
+  const authorization = localStorage.getItem('token') as string;
+
+  if (!username || !authorization) return;
+
+  const res = await getSurvey(username, authorization);
+  tableData.value = res.map((survey: databaseSurveyType) => {
+    const lastIdx = survey.length - 1;
+    return {
+      createDate: survey[lastIdx]?.createDate,
+      title: survey[lastIdx]?.title,
+      // FIXME: 它会把备注说明，这种不是题目也计算上
+      questionCount: survey.length - 1,
+      updateDate: survey[lastIdx]?.updateDate,
+    };
+  });
+});
 </script>
 
 <template>
