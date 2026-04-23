@@ -87,7 +87,7 @@ const questionIndices = computed(() => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-slate-50 py-10 px-4 flex flex-col items-center">
+  <div class="preview-container min-h-screen py-10 px-4 flex flex-col items-center">
     <!-- Top Bar -->
     <div class="w-full max-w-4xl flex justify-between items-center mb-6 no-print">
       <div class="flex gap-3">
@@ -101,7 +101,7 @@ const questionIndices = computed(() => {
     </div>
 
     <!-- Survey Container -->
-    <div class="w-full max-w-4xl bg-white rounded-lg shadow-sm overflow-hidden mb-8 p-10 pb-16 print-area">
+    <div class="w-full max-w-2xl bg-white rounded-lg shadow-sm overflow-hidden mb-8 p-10 pb-16 print-area">
 
       <div v-if="!loading && surveyItems.length > 0" class="flex flex-col gap-6">
         <div
@@ -132,6 +132,13 @@ const questionIndices = computed(() => {
 </template>
 
 <style scoped>
+.preview-container {
+  background-image: url('@/assets/preview_background.png');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+}
+
 @media print {
   .no-print {
     display: none !important;

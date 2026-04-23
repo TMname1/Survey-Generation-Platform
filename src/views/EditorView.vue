@@ -80,6 +80,7 @@ const questionIndices = computed(() => {
   let questionCount = 0;
 
   dataStore.survey.forEach((item) => {
+    if ('uuid' in item) return;
     if (!remarkTypes.includes(item.type)) {
       questionCount++;
       indices[item.id] = questionCount;
@@ -126,6 +127,13 @@ const editorSurvey = computed({
 useDraggable(draggableElement, editorSurvey, {
   animation: 150,
   ghostClass: 'ghost',
+  scroll: true,
+  scrollSensitivity: 80,
+  scrollSpeed: 20,
+  bubbleScroll: true,
+  forceFallback: true,
+  fallbackOnBody: true,
+  fallbackTolerance: 5, // 必须移动超过5像素才被视为拖拽，从而不影响点击选中组件
 });
 
 export type surveyInfoType = {
@@ -188,7 +196,7 @@ const handleOutlineClick = (item: SurveyItem) => {
   if (activeStore.value !== item) {
     setActiveSurvey(item);
   }
-  
+
   setTimeout(() => {
     const el = document.getElementById(`survey-item-${item.id}`);
     if (el) {
@@ -330,7 +338,7 @@ const handleOutlineClick = (item: SurveyItem) => {
             v-for="item in editorSurvey"
             :key="item?.id"
             :id="'survey-item-' + item?.id"
-            class="transition-shadow-scale relative cursor-pointer p-6 hover:scale-102 hover:shadow-lg"
+            class="transition-shadow-scale relative cursor-pointer select-none p-6 hover:scale-102 hover:shadow-lg"
             :class="{
               'border-2 border-blue-400 shadow-lg': activeSurveyId === item?.id,
             }"
