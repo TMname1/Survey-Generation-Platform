@@ -52,6 +52,11 @@ const router = createRouter({
       component: () => import('@/views/PreviewView.vue'),
     },
     {
+      path: '/online/:id',
+      name: 'online-survey',
+      component: () => import('@/views/OnlineSurveyView.vue'),
+    },
+    {
       path: '/',
       name: 'home',
       component: () => import('@/views/HomeView.vue'),

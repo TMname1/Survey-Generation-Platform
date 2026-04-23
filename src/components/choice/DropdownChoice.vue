@@ -41,6 +41,7 @@ const stageVal = ref('');
 
 const handleCommand = (command: string) => {
   stageVal.value = command;
+  props.data.answer = command;
 };
 </script>
 <template>

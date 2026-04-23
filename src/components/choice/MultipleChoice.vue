@@ -43,7 +43,7 @@ const descStyle = computed(() => ({
       {{ data.title }}
     </h1>
     <p class="mb-5" :style="descStyle">{{ data.desc }}</p>
-    <el-checkbox-group>
+    <el-checkbox-group v-model="data.answer">
       <el-checkbox v-for="(opt, index) in data.options" :key="index" :label="opt" :value="opt">{{
         opt
       }}</el-checkbox>

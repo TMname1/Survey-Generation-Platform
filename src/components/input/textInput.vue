@@ -49,10 +49,18 @@ const inputVal = ref('');
     </h1>
     <p class="mb-5" :style="descStyle">{{ store.desc }}</p>
     <el-input
-      v-model="inputVal"
-      :type="store.style === '多行文本' ? 'textarea' : 'text'"
-      placeholder="请输入内容"
-      :rows="store.style === '多行文本' ? 4 : undefined"
+      v-if="store.style === '单行文本'"
+      v-model="store.answer"
+      placeholder="请输入单行文本"
+      clearable
+    />
+    <el-input
+      v-else
+      v-model="store.answer"
+      type="textarea"
+      :rows="4"
+      placeholder="请输入多行文本"
+      clearable
     />
   </div>
 </template>
