@@ -6,6 +6,10 @@ import { ElMessageBox } from 'element-plus';
 import { useDataStore, type SurveyItem } from '@/stores/survey.ts';
 import { useMaterialsStore } from '@/stores/materials';
 import { useDraggable } from 'vue-draggable-plus';
+import { updateSurvey } from '@/apis/updateSurvey.ts';
+import { v4 as uuidv4 } from 'uuid';
+import { throttle } from '@/utils/throttle.ts';
+import { changeSurvey } from '@/apis/changeSurvey.ts';
 
 // Import components
 import ButtonSelection from '@/components/ButtonSelection.vue';
@@ -90,8 +94,7 @@ provide('componentMap', componentMap);
 provide('activeStore', activeStore);
 
 const editComponentsMap: Record<string, unknown> = {
-  // TODO: 名字改回来
-  textStyle: TextStyle,
+  TextStyle,
   TitleSetting,
   DescSetting,
   RadioOption,
@@ -115,6 +118,66 @@ useDraggable(draggableElement, ref([...dataStore.survey]), {
     moveElement(dataStore.survey, oldIndex!, newIndex!);
   },
 });
+
+export type surveyInfoType = {
+  createDate: string;
+  updateDate: string;
+  surveyTitle: string;
+  uuid: string;
+};
+
+const surveyTitle = ref<string>('');
+surveyTitle.value = (dataStore.survey[dataStore.survey.length - 1]?.surveyTitle as string) || '';
+
+const handleUpdateSurvey = throttle(async () => {
+  const username = localStorage.getItem('username') as string;
+  const authorization = localStorage.getItem('token') as string;
+
+  if (!username || !authorization) {
+    ElMessage.warning('请先登录或注册');
+    return;
+  }
+
+  if (!surveyTitle.value.trim()) {
+    ElMessage.warning('问卷未命名');
+    return;
+  }
+
+  const survey = useDataStore().survey;
+
+  const surveyInfo: surveyInfoType = {
+    createDate: new Date().toLocaleDateString('zh-CN'),
+    updateDate: new Date().toLocaleDateString('zh-CN'),
+    surveyTitle: surveyTitle.value,
+    uuid: uuidv4(),
+  };
+
+  const { msg } = await updateSurvey(username, authorization, [...survey, surveyInfo]);
+
+  dataStore.isUpdate = true;
+  ElMessage.success(msg);
+}, 1000);
+
+const editorSurvey = computed(() => {
+  return dataStore.survey.filter((item) => {
+    return !item.uuid;
+  });
+});
+
+const handleChangeSurvey = throttle(async () => {
+  const username = localStorage.getItem('username') as string;
+
+  // 保证uuid的对象是在最后的
+  dataStore.moveUuid();
+
+  dataStore.survey[dataStore.survey.length - 1]!.surveyTitle = surveyTitle.value;
+  dataStore.survey[dataStore.survey.length - 1]!.updateDate = new Date().toLocaleDateString(
+    'zh-CN',
+  );
+
+  const { msg } = await changeSurvey(username, dataStore.survey);
+  ElMessage.success(msg);
+}, 1000);
 </script>
 
 <template>
@@ -124,8 +187,25 @@ useDraggable(draggableElement, ref([...dataStore.survey]), {
         <el-button class="h-10! w-10!" :icon="ArrowLeft" circle @click="router.push('/')" />
       </div>
       <div>
-        <el-button type="danger">重置问题</el-button>
-        <el-button type="success">保存问卷</el-button>
+        <el-button v-if="!dataStore.isUpdate" type="success" @click="handleUpdateSurvey">{{
+          '保存问卷'
+        }}</el-button>
+        <el-button v-else type="success" @click="handleChangeSurvey">{{ '更新问卷' }}</el-button>
+      </div>
+    </div>
+    <div>
+      <div
+        class="relative mr-6 inline-flex min-w-37.5 items-center justify-center text-lg font-bold"
+      >
+        <!-- 镜像克隆元素，用于撑开宽度，invisible隐藏文字 -->
+        <span class="invisible px-3 py-1">{{ surveyTitle || '未命名问卷' }}</span>
+        <!-- 实际输入框 -->
+        <input
+          v-model="surveyTitle"
+          class="absolute inset-0 h-full w-full rounded-lg border border-gray-300 bg-transparent text-center outline-none focus:border-blue-500"
+          placeholder="未命名问卷"
+          maxlength="60"
+        />
       </div>
     </div>
     <div class="flex h-full items-center justify-center border-l border-gray-300 px-4">
@@ -199,13 +279,13 @@ useDraggable(draggableElement, ref([...dataStore.survey]), {
       <div class="w-155 rounded bg-white p-10 text-center shadow-[0_4px_12px_rgba(0,0,0,0.05)]">
         <div class="flex flex-col" ref="draggableElement">
           <div
-            v-for="item in dataStore.survey"
-            :key="item.id"
+            v-for="item in editorSurvey"
+            :key="item?.id"
             class="transition-shadow-scale relative cursor-pointer p-6 hover:scale-102 hover:shadow-lg"
             :class="{
-              'border-2 border-blue-400 shadow-lg': activeSurveyId === item.id,
+              'border-2 border-blue-400 shadow-lg': activeSurveyId === item?.id,
             }"
-            @click="setActiveSurvey(item)"
+            @click="setActiveSurvey(item as SurveyItem)"
           >
             <div
               class="absolute -top-2.5 -right-2.5 flex h-5 w-5 cursor-pointer items-center justify-center rounded-2xl border bg-red-400 text-sm text-white hover:bg-red-300"
@@ -216,19 +296,19 @@ useDraggable(draggableElement, ref([...dataStore.survey]), {
                   type: 'warning',
                 })
                   .then(() => {
-                    dataStore.removeSurvey(item.id);
+                    dataStore.removeSurvey(item?.id as number);
                     activeStore = null;
                   })
-                  .catch(() => {})
+                  .catch()
               "
-              v-show="activeSurveyId === item.id"
+              v-show="activeSurveyId === item?.id"
             >
               x
             </div>
             <component
-              :is="componentMap[item.type]"
+              :is="componentMap[item?.type as string]"
               :data="item"
-              :question-index="questionIndices[item.id]"
+              :question-index="questionIndices[item?.id as number]"
             />
           </div>
         </div>

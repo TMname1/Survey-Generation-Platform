@@ -2,7 +2,7 @@ import { ref } from 'vue';
 
 export const createTextInputStore = () => {
   const editComponents = ref([
-    'textStyle',
+    'TextStyle',
     'TitleSetting',
     'DescSetting',
     'SizeSetting',

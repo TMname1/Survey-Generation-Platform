@@ -148,25 +148,56 @@ export const useDataStore = defineStore('data', () => {
   };
 
   // 初始化问卷标题和说明
-  addSurvey(createRemarkTitleStore, '备注说明');
-  setTimeout(() => {
-    addSurvey(
-      () =>
-        createRemarkCTXStore(
-          '为了给您提供更好的服务，希望您能抽出几分钟时间，将您的感受和建议告诉我们，我们非常重视每位用户的宝贵意见，期待您的参与！现在我们就马上开始吧！',
-        ),
-      '备注说明',
-    );
-  }, 100);
+  const initSurvey = () => {
+    survey.value = [];
+    addSurvey(createRemarkTitleStore, '备注说明');
+    setTimeout(() => {
+      addSurvey(
+        () =>
+          createRemarkCTXStore(
+            '为了给您提供更好的服务，希望您能抽出几分钟时间，将您的感受和建议告诉我们，我们非常重视每位用户的宝贵意见，期待您的参与！现在我们就马上开始吧！',
+          ),
+        '备注说明',
+      );
+    }, 100);
+  };
+  initSurvey();
 
   const removeSurvey = (id: number) => {
     survey.value = survey.value.filter((item) => item.id !== id);
   };
 
+  const isUpdate = ref(false);
+
+  const moveUuid = () => {
+    /**
+     * 自动寻找数组中唯一带有 uuid 属性的对象并移至末尾
+     * @param {Array} arr - 目标数组
+     * @returns {Array} - 修改后的原数组
+     */
+    function moveUuidToLast(arr: SurveyItem[]) {
+      // 1. 找到那个拥有 uuid 属性的对象索引
+      const index = arr.findIndex((item) => 'uuid' in item);
+
+      // 2. 如果找到了且不在末尾，执行移动
+      if (index !== -1 && index !== arr.length - 1) {
+        const [target] = arr.splice(index, 1);
+        arr.push(target as SurveyItem);
+      }
+
+      return arr;
+    }
+
+    survey.value = moveUuidToLast(survey.value);
+  };
+
   return {
     survey,
+    isUpdate,
     addSurvey,
     removeSurvey,
+    initSurvey,
+    moveUuid,
     createFn: {
       createSingleChoiceStore,
       createDropdownChoiceStore,
