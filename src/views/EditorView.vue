@@ -129,6 +129,8 @@ export type surveyInfoType = {
 const surveyTitle = ref<string>('');
 surveyTitle.value = (dataStore.survey[dataStore.survey.length - 1]?.surveyTitle as string) || '';
 
+const activeLeftTab = ref<'题型' | '大纲'>('题型');
+
 const handleUpdateSurvey = throttle(async () => {
   const username = localStorage.getItem('username') as string;
   const authorization = localStorage.getItem('token') as string;
@@ -178,6 +180,19 @@ const handleChangeSurvey = throttle(async () => {
   const { msg } = await changeSurvey(username, dataStore.survey);
   ElMessage.success(msg);
 }, 1000);
+
+const handleOutlineClick = (item: SurveyItem) => {
+  if (activeStore.value !== item) {
+    setActiveSurvey(item);
+  }
+  
+  setTimeout(() => {
+    const el = document.getElementById(`survey-item-${item.id}`);
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }, 50);
+};
 </script>
 
 <template>
@@ -217,13 +232,17 @@ const handleChangeSurvey = throttle(async () => {
     <aside>
       <div class="flex w-16 flex-col items-center border-r border-gray-100 pt-5">
         <div
-          class="mb-6 flex cursor-pointer flex-col items-center justify-between text-center text-sm text-blue-500"
+          class="mb-6 flex cursor-pointer flex-col items-center justify-between text-center text-sm"
+          :class="activeLeftTab === '题型' ? 'text-blue-500' : 'text-gray-500'"
+          @click="activeLeftTab = '题型'"
         >
           <el-icon><Folder /></el-icon>
           <div>题型</div>
         </div>
         <div
-          class="mb-6 flex cursor-pointer flex-col items-center justify-between text-center text-sm text-gray-500"
+          class="mb-6 flex cursor-pointer flex-col items-center justify-between text-center text-sm"
+          :class="activeLeftTab === '大纲' ? 'text-blue-500' : 'text-gray-500'"
+          @click="activeLeftTab = '大纲'"
         >
           <el-icon><List /></el-icon>
           <div>大纲</div>
@@ -231,45 +250,71 @@ const handleChangeSurvey = throttle(async () => {
       </div>
     </aside>
     <aside class="flex w-60 flex-col overflow-y-auto border-r border-gray-300 bg-white p-5">
-      <div class="mb-5">
-        <div class="mb-2.5 flex items-center text-sm font-bold">
-          <el-icon class="mr-1"><CircleCheck /></el-icon> 选择
+      <template v-if="activeLeftTab === '题型'">
+        <div class="mb-5">
+          <div class="mb-2.5 flex items-center text-sm font-bold">
+            <el-icon class="mr-1"><CircleCheck /></el-icon> 选择
+          </div>
+          <ButtonSelection :data="materialsStore.selectionBtnData" />
         </div>
-        <ButtonSelection :data="materialsStore.selectionBtnData" />
-      </div>
-      <div class="mb-5">
-        <div class="mb-2.5 flex items-center text-sm font-bold">
-          <el-icon class="mr-1"><EditPen /></el-icon> 文本输入
+        <div class="mb-5">
+          <div class="mb-2.5 flex items-center text-sm font-bold">
+            <el-icon class="mr-1"><EditPen /></el-icon> 文本输入
+          </div>
+          <ButtonSelection :data="materialsStore.textInputBtnData" />
         </div>
-        <ButtonSelection :data="materialsStore.textInputBtnData" />
-      </div>
 
-      <div class="mb-5">
-        <div class="mb-2.5 flex items-center text-sm font-bold">
-          <el-icon class="mr-1"><MessageBox /></el-icon> 高级题型
+        <div class="mb-5">
+          <div class="mb-2.5 flex items-center text-sm font-bold">
+            <el-icon class="mr-1"><MessageBox /></el-icon> 高级题型
+          </div>
+          <ButtonSelection :data="materialsStore.advancedBtnData" />
         </div>
-        <ButtonSelection :data="materialsStore.advancedBtnData" />
-      </div>
 
-      <div class="mb-5">
-        <div class="mb-2.5 flex items-center text-sm font-bold">
-          <el-icon class="mr-1"><ChatLineSquare /></el-icon> 备注说明
+        <div class="mb-5">
+          <div class="mb-2.5 flex items-center text-sm font-bold">
+            <el-icon class="mr-1"><ChatLineSquare /></el-icon> 备注说明
+          </div>
+          <ButtonSelection :data="materialsStore.remarkBtnData" />
         </div>
-        <ButtonSelection :data="materialsStore.remarkBtnData" />
-      </div>
 
-      <div class="mb-5">
-        <div class="mb-2.5 flex items-center text-sm font-bold">
-          <el-icon class="mr-1"><User /></el-icon> 个人信息
+        <div class="mb-5">
+          <div class="mb-2.5 flex items-center text-sm font-bold">
+            <el-icon class="mr-1"><User /></el-icon> 个人信息
+          </div>
+          <ButtonSelection :data="materialsStore.personalInfoBtnData" />
         </div>
-        <ButtonSelection :data="materialsStore.personalInfoBtnData" />
-      </div>
-      <div class="mb-5">
-        <div class="mb-2.5 flex items-center text-sm font-bold">
-          <el-icon class="mr-1"><Message /></el-icon> 联系方式
+        <div class="mb-5">
+          <div class="mb-2.5 flex items-center text-sm font-bold">
+            <el-icon class="mr-1"><Message /></el-icon> 联系方式
+          </div>
+          <ButtonSelection :data="materialsStore.contactBtnData" />
         </div>
-        <ButtonSelection :data="materialsStore.contactBtnData" />
-      </div>
+      </template>
+
+      <template v-else>
+        <div class="flex flex-col gap-2">
+          <div
+            v-for="item in editorSurvey"
+            :key="item?.id"
+            class="cursor-pointer truncate rounded px-3 py-2 text-sm transition-colors"
+            :class="[
+              activeSurveyId === item?.id
+                ? 'bg-blue-100 text-blue-600 font-medium'
+                : 'hover:bg-gray-100 text-gray-700'
+            ]"
+            @click="handleOutlineClick(item as SurveyItem)"
+          >
+            <span v-if="questionIndices[item?.id as number]" class="mr-1 font-bold">
+              {{ String(questionIndices[item?.id as number]).padStart(2, '0') }}.
+            </span>
+            <span>{{ (item as any)?.title || item?.type }}</span>
+          </div>
+          <div v-if="!editorSurvey.length" class="mt-10 text-center text-sm text-gray-400">
+            暂无大纲内容
+          </div>
+        </div>
+      </template>
     </aside>
 
     <!-- 中间预览区 -->
@@ -281,6 +326,7 @@ const handleChangeSurvey = throttle(async () => {
           <div
             v-for="item in editorSurvey"
             :key="item?.id"
+            :id="'survey-item-' + item?.id"
             class="transition-shadow-scale relative cursor-pointer p-6 hover:scale-102 hover:shadow-lg"
             :class="{
               'border-2 border-blue-400 shadow-lg': activeSurveyId === item?.id,
