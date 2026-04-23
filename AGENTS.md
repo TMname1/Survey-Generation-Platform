@@ -1,4 +1,4 @@
-﻿# PROJECT KNOWLEDGE BASE
+# PROJECT KNOWLEDGE BASE
 
 **Generated:** 2026-04-20
 **Commit:** a9a6cff
@@ -42,6 +42,8 @@ Frontend Vue 3 SPA built with Vite, TypeScript, Pinia, Vue Router, Tailwind CSS,
   - Components in src/components/{choice,advanced,input,remarks}/ consume a data prop which is the reactive state from a factory.
   - **Edit Panels**: Driven by an editComponents string array returned by each store factory. The UI maps these strings to components in src/components/editor/.
 - **State Injection**: Editor components (e.g., RadioOption.vue) use inject('activeStore') to access and mutate the currently selected item's state directly.
+- **Survey Data Structure (`databaseSurveyType`)**: A survey is represented as an array where all elements _except the last_ are survey components (`SurveyItem`), and the _final element_ is always the metadata (`surveyInfoType` containing `uuid`, `surveyTitle`, etc.).
+- **Component Classification**: Not all items in the survey array are questions. Remark types (e.g., `备注标题`, `备注段落`) are layout/informational components and must be excluded when calculating question counts.
 
 ## CONVENTIONS
 

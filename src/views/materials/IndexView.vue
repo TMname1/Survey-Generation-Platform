@@ -49,7 +49,6 @@ const componentMap: Record<string, unknown> = {
   文本输入: TextInput,
   备注标题: TitleComponent,
   备注段落: ParagraphComponent,
-  // TODO: 完成后面
   // 图片单选题: ImageSingleChoice,
   // 图片多选题: ....
 };
@@ -60,7 +59,6 @@ const navItems = [
   { label: '选择', icon: Select, path: { name: 'materials-selection' } },
   { label: '文本输入', icon: Edit, path: { name: 'materials-text-input' } },
   { label: '高级题型', icon: Setting, path: { name: 'materials-advanced' } },
-  // TODO: 完成后面
   { label: '备注说明', icon: Document, path: { name: 'materials-remarks' } },
   { label: '个人信息', icon: User, path: { name: 'materials-personal-info' } },
   { label: '联系方式', icon: Phone, path: { name: 'materials-contact' } },

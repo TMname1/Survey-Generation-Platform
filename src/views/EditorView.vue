@@ -171,6 +171,9 @@ const handleChangeSurvey = throttle(async () => {
   dataStore.moveUuid();
 
   dataStore.survey[dataStore.survey.length - 1]!.surveyTitle = surveyTitle.value;
+  dataStore.survey[dataStore.survey.length - 1]!.updateDate = new Date().toLocaleDateString(
+    'zh-CN',
+  );
 
   const { msg } = await changeSurvey(username, dataStore.survey);
   ElMessage.success(msg);
@@ -187,7 +190,6 @@ const handleChangeSurvey = throttle(async () => {
         <el-button v-if="!dataStore.isUpdate" type="success" @click="handleUpdateSurvey">{{
           '保存问卷'
         }}</el-button>
-        <!-- TODO: 更新日期 -->
         <el-button v-else type="success" @click="handleChangeSurvey">{{ '更新问卷' }}</el-button>
       </div>
     </div>

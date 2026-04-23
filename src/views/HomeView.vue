@@ -22,6 +22,9 @@ type tableDataType = {
 };
 
 const tableData = ref();
+const remarkTypes = ['备注标题', '备注段落'];
+const isSurveyQuestion = (item: databaseSurveyType[number]) =>
+  'type' in item && !remarkTypes.includes(item.type);
 
 const renderTableData = async () => {
   const username = localStorage.getItem('username') as string;
@@ -35,11 +38,12 @@ const renderTableData = async () => {
   const res = await getSurvey(username, authorization);
   tableData.value = res.map((survey: databaseSurveyType) => {
     const lastIdx = survey.length - 1;
+    const questionCount = survey.filter(isSurveyQuestion).length;
+
     return {
       createDate: survey[lastIdx]?.createDate,
       title: survey[lastIdx]?.surveyTitle,
-      // FIXME: 它会把备注说明，这种不是题目也计算上
-      questionCount: survey.length - 1,
+      questionCount,
       updateDate: survey[lastIdx]?.updateDate,
       uuid: survey[lastIdx]?.uuid,
     };
@@ -121,14 +125,14 @@ const handleDeleteSurvey = throttle(async (item: tableDataType) => {
               <div class="flex items-center gap-3">
                 <el-link
                   type="primary"
-                  :underline="false"
+                  underline="never"
                   @click="router.push('/preview/' + scope.row.uuid)"
                   >查看问卷</el-link
                 >
-                <el-link type="warning" :underline="false" @click="editSurveyHandle(scope.row)"
+                <el-link type="warning" underline="never" @click="editSurveyHandle(scope.row)"
                   >编辑</el-link
                 >
-                <el-link type="danger" :underline="false" @click="handleDeleteSurvey(scope.row)"
+                <el-link type="danger" underline="never" @click="handleDeleteSurvey(scope.row)"
                   >删除</el-link
                 >
               </div>
