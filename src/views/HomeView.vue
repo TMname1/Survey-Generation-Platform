@@ -7,6 +7,8 @@ import { onBeforeMount, ref, watch } from 'vue';
 import type { databaseSurveyType } from '@/apis/updateSurvey.ts';
 import { useUserStore } from '@/stores/user';
 import { useDataStore } from '@/stores/survey.ts';
+import { deleteSurvey } from '@/apis/deleteSurvey.ts';
+import { throttle } from '@/utils/throttle.ts';
 
 const router = useRouter();
 const userStore = useUserStore();
@@ -75,6 +77,22 @@ const createSurveyHandle = () => {
   dataStore.isUpdate = false;
   router.push('/editor');
 };
+
+const handleDeleteSurvey = throttle(async (item: tableDataType) => {
+  const res = await deleteSurvey(localStorage.getItem('username') as string, item.uuid);
+  if (res) {
+    ElMessage({
+      message: '删除成功',
+      type: 'success',
+    });
+    renderTableData();
+  } else {
+    ElMessage({
+      message: '删除失败',
+      type: 'error',
+    });
+  }
+});
 </script>
 
 <template>
@@ -101,11 +119,18 @@ const createSurveyHandle = () => {
           <el-table-column label="操作" min-width="140">
             <template #default="scope">
               <div class="flex items-center gap-3">
-                <el-link type="primary" :underline="false" @click="router.push('/preview/' + scope.row.uuid)">查看问卷</el-link>
+                <el-link
+                  type="primary"
+                  :underline="false"
+                  @click="router.push('/preview/' + scope.row.uuid)"
+                  >查看问卷</el-link
+                >
                 <el-link type="warning" :underline="false" @click="editSurveyHandle(scope.row)"
                   >编辑</el-link
                 >
-                <el-link type="danger" :underline="false">删除</el-link>
+                <el-link type="danger" :underline="false" @click="handleDeleteSurvey(scope.row)"
+                  >删除</el-link
+                >
               </div>
             </template>
           </el-table-column>

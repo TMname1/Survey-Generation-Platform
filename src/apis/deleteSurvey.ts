@@ -3,29 +3,18 @@ import { type surveyInfoType } from '@/views/EditorView.vue';
 
 export type databaseSurveyType = [...SurveyItem[], surveyInfoType];
 
-/**
- * 保存问卷
- * @param username
- * @param authorization
- * @param survey
- * @returns
- */
-export const updateSurvey = async (
-  username: string,
-  authorization: string,
-  survey: databaseSurveyType,
-) => {
+export const deleteSurvey = async (username: string, uuid: string) => {
   const headers = new Headers();
   headers.append('Content-Type', 'application/json');
 
   const requestOptions = {
     method: 'POST',
     headers,
-    body: JSON.stringify({ username, authorization, survey }),
+    body: JSON.stringify({ username, uuid }),
     redirect: 'follow' as RequestRedirect,
   };
 
-  const response = await fetch('https://sdb5cjl3wk.sealosbja.site/update-survey', requestOptions);
+  const response = await fetch('https://sdb5cjl3wk.sealosbja.site/delete-survey', requestOptions);
   const data = await response.json();
   // console.log('Register response:', data);
   return data;

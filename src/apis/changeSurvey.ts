@@ -1,10 +1,14 @@
 import type { SurveyItem } from '@/stores/survey.ts';
 
+/**
+ * 更新问卷
+ * @param username
+ * @param survey
+ * @returns
+ */
 export const changeSurvey = async (username: string, survey: SurveyItem[]) => {
   const headers = new Headers();
   headers.append('Content-Type', 'application/json');
-
-  console.log('我是survey', survey);
 
   const requestOptions = {
     method: 'POST',
