@@ -106,17 +106,26 @@ const editComponentsMap: Record<string, unknown> = {
 };
 
 const draggableElement = ref();
-useDraggable(draggableElement, ref([...dataStore.survey]), {
+
+const editorSurvey = computed({
+  get: () => {
+    return dataStore.survey.filter((item) => {
+      return !item.uuid;
+    });
+  },
+  set: (val) => {
+    const uuidItem = dataStore.survey.find((item) => item.uuid);
+    if (uuidItem) {
+      dataStore.survey = [...val, uuidItem];
+    } else {
+      dataStore.survey = val;
+    }
+  }
+});
+
+useDraggable(draggableElement, editorSurvey, {
   animation: 150,
   ghostClass: 'ghost',
-  onUpdate({ oldIndex, newIndex }) {
-    function moveElement(arr: SurveyItem[], fromIndex: number, toIndex: number) {
-      const element = arr.splice(fromIndex, 1)[0] as SurveyItem;
-      arr.splice(toIndex, 0, element);
-      return arr;
-    }
-    moveElement(dataStore.survey, oldIndex!, newIndex!);
-  },
 });
 
 export type surveyInfoType = {
@@ -159,12 +168,6 @@ const handleUpdateSurvey = throttle(async () => {
   dataStore.isUpdate = true;
   ElMessage.success(msg);
 }, 1000);
-
-const editorSurvey = computed(() => {
-  return dataStore.survey.filter((item) => {
-    return !item.uuid;
-  });
-});
 
 const handleChangeSurvey = throttle(async () => {
   const username = localStorage.getItem('username') as string;
