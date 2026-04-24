@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, ref } from 'vue';
+import { computed } from 'vue';
 
 const props = defineProps({
   data: {
@@ -37,8 +37,6 @@ const descStyle = computed(() => ({
   fontStyle: store.descItalic === '斜体' ? 'italic' : 'normal',
   color: store.descColor,
 }));
-
-const inputVal = ref('');
 </script>
 
 <template>

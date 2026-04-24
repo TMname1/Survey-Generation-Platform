@@ -47,6 +47,11 @@ const router = createRouter({
       component: () => import('@/views/EditorView.vue'),
     },
     {
+      path: '/data/:id',
+      name: 'data',
+      component: () => import('@/views/DataView.vue'),
+    },
+    {
       path: '/preview/:id',
       name: 'preview',
       component: () => import('@/views/PreviewView.vue'),

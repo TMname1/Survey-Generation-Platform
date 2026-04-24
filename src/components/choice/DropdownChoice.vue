@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, ref } from 'vue';
+import { computed } from 'vue';
 import { ArrowDown } from '@element-plus/icons-vue';
 
 const props = defineProps({
@@ -37,10 +37,8 @@ const descStyle = computed(() => ({
   color: props.data.descColor,
 }));
 
-const stageVal = ref('');
-
 const handleCommand = (command: string) => {
-  stageVal.value = command;
+  // eslint-disable-next-line vue/no-mutating-props
   props.data.answer = command;
 };
 </script>
@@ -53,7 +51,7 @@ const handleCommand = (command: string) => {
     <p class="mb-5" :style="descStyle">{{ data.desc }}</p>
     <el-dropdown @command="handleCommand">
       <el-button>
-        {{ stageVal || '请选择选项' }}
+        {{ data.answer || '请选择选项' }}
         <el-icon class="el-icon--right"><ArrowDown /></el-icon>
       </el-button>
       <template #dropdown>

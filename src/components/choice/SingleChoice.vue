@@ -43,6 +43,7 @@ const descStyle = computed(() => ({
       {{ data.title }}
     </h1>
     <p class="mb-5" :style="descStyle">{{ data.desc }}</p>
+    <!-- eslint-disable-next-line vue/no-mutating-props -->
     <el-radio-group v-model="data.answer">
       <el-radio v-for="(opt, index) in data.options" :key="index" :label="opt" :value="opt">{{
         opt
