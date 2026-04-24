@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { inject, ref } from 'vue';
-import { useDataStore } from '@/stores/survey.ts';
+import { useDataStore, type SurveyItem } from '@/stores/survey.ts';
 import { useRoute } from 'vue-router';
 
 defineProps({
@@ -19,31 +19,42 @@ const route = useRoute();
 
 const handleClick = (item: { id: string; name: string }) => {
   activeId.value = item.id;
+  let addedItem: SurveyItem | null = null;
 
   if (route.path === '/editor') {
     if (item.name === '单选题') {
-      dataStore.addSurvey(dataStore.createFn.createSingleChoiceStore, item.name);
+      addedItem = dataStore.addSurvey(dataStore.createFn.createSingleChoiceStore, item.name);
     }
     if (item.name === '多选题') {
-      dataStore.addSurvey(dataStore.createFn.createMultipleChoiceStore, item.name);
+      addedItem = dataStore.addSurvey(dataStore.createFn.createMultipleChoiceStore, item.name);
     }
     if (item.name === '下拉选择题') {
-      dataStore.addSurvey(dataStore.createFn.createDropdownChoiceStore, item.name);
+      addedItem = dataStore.addSurvey(dataStore.createFn.createDropdownChoiceStore, item.name);
     }
     if (item.name === '评价') {
-      dataStore.addSurvey(dataStore.createFn.createRateStore, item.name);
+      addedItem = dataStore.addSurvey(dataStore.createFn.createRateStore, item.name);
     }
     if (item.name === '日期') {
-      dataStore.addSurvey(dataStore.createFn.createDateStore, item.name);
+      addedItem = dataStore.addSurvey(dataStore.createFn.createDateStore, item.name);
     }
     if (item.name === '文本输入') {
-      dataStore.addSurvey(dataStore.createFn.createTextInputStore, item.name);
+      addedItem = dataStore.addSurvey(dataStore.createFn.createTextInputStore, item.name);
     }
     if (item.name === '备注标题') {
-      dataStore.addSurvey(dataStore.createFn.createRemarkTitleStore, '备注标题');
+      addedItem = dataStore.addSurvey(dataStore.createFn.createRemarkTitleStore, '备注标题');
     }
     if (item.name === '备注段落') {
-      dataStore.addSurvey(dataStore.createFn.createRemarkCTXStore, '备注段落');
+      addedItem = dataStore.addSurvey(dataStore.createFn.createRemarkCTXStore, '备注段落');
+    }
+
+    if (addedItem) {
+      const id = addedItem.id;
+      setTimeout(() => {
+        const el = document.getElementById(`survey-item-${id}`);
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }, 100);
     }
   }
 

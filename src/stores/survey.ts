@@ -145,6 +145,7 @@ export const useDataStore = defineStore('data', () => {
     };
 
     survey.value.push(item);
+    return item;
   };
 
   // 初始化问卷标题和说明

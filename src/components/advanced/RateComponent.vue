@@ -48,6 +48,6 @@ const rateVal = ref(0);
       {{ store.title }}
     </h1>
     <p class="mb-5" :style="descStyle">{{ store.desc }}</p>
-    <el-rate v-model="rateVal" allow-half />
+    <el-rate v-model="store.answer" allow-half />
   </div>
 </template>
