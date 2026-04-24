@@ -123,19 +123,17 @@ const handleDeleteSurvey = throttle(async (item: tableDataType) => {
           <el-table-column label="操作" min-width="140">
             <template #default="scope">
               <div class="flex items-center gap-3">
-                <el-link
-                  type="primary"
-                  underline="never"
-                  @click="router.push('/preview/' + scope.row.uuid)"
-                  >查看问卷</el-link
-                >
-                <el-link type="warning" underline="never" @click="editSurveyHandle(scope.row)"
-                  >编辑</el-link
-                >
-                <el-link type="danger" underline="never" @click="handleDeleteSurvey(scope.row)"
-                  >删除</el-link
-                >
+                <el-link type="primary" underline="never"
+                  @click="router.push('/preview/' + scope.row.uuid)">查看问卷</el-link>
+
+                <el-link type="warning" underline="never" @click="editSurveyHandle(scope.row)">编辑</el-link>
+                <el-link type="danger" underline="never" @click="handleDeleteSurvey(scope.row)">删除</el-link>
               </div>
+            </template>
+          </el-table-column>
+          <el-table-column label="提交数据">
+            <template #default="scope">
+              <el-link type="success" underline="never" @click="router.push('/data/' + scope.row.uuid)">查看</el-link>
             </template>
           </el-table-column>
         </el-table>

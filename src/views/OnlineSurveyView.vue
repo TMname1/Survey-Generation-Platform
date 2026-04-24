@@ -36,6 +36,7 @@ const surveyUuid = ref('');
 const surveyItems = ref<SurveyItem[]>([]);
 const loading = ref(true);
 const submitted = ref(false);
+const isSubmitting = ref(false);
 
 const remarkTypes = ['备注标题', '备注段落'];
 
@@ -59,16 +60,25 @@ export type surveyAnswerType = {
   survey: SurveyItem[];
 };
 
-// TODO: 不是所有属性都需要传的，但是不能省太多，像标题和别的something可能都是需要的
-const uploadSurveyAnswer = throttle(async (data: surveyAnswerType) => {
-  const res = await uploadAnswer(data.uuid, data.survey);
-  console.log('submitting', data);
 
-  if (res.ok) {
-    ElMessage.success('问卷提交成功！');
-    submitted.value = true;
-  } else {
-    ElMessage.error(res.error);
+// TODO: 不是所有属性都需要传的
+// TODO: 想想如何渲染数据
+const uploadSurveyAnswer = throttle(async (data: surveyAnswerType) => {
+  isSubmitting.value = true;
+  try {
+    const res = await uploadAnswer(data.uuid, data.survey);
+
+    // TODO: 数据决定好，记得把我删除了
+    console.log('submitting', data);
+
+    if (res.ok) {
+      ElMessage.success('问卷提交成功！');
+      submitted.value = true;
+    } else {
+      ElMessage.error(res.error);
+    }
+  } finally {
+    isSubmitting.value = false;
   }
 }, 1000);
 
@@ -109,7 +119,8 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="online-survey-container flex min-h-screen flex-col items-center px-4 py-10">
+  <div class="online-survey-container flex min-h-screen flex-col items-center px-4 py-10"
+    v-loading.fullscreen.lock="isSubmitting" element-loading-text="正在提交...">
     <div class="mb-8 w-full max-w-2xl rounded-lg bg-white p-10 shadow-sm">
       <div v-if="submitted" class="py-20 text-center text-lg text-slate-600">
         感谢您的填写，问卷已提交
