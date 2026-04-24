@@ -1,12 +1,10 @@
-import { type SurveyItem } from '@/stores/survey.ts';
-
 /**
  * 将问卷答案上传到服务器
  * @param uuid
  * @param survey
  * @returns
  */
-export const uploadAnswer = async (uuid: string, survey: SurveyItem[]) => {
+export const uploadAnswer = async (uuid: string, survey: { answer: unknown }[]) => {
   const headers = new Headers();
   headers.append('Content-Type', 'application/json');
 

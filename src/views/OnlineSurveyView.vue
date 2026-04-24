@@ -60,16 +60,14 @@ export type surveyAnswerType = {
   survey: SurveyItem[];
 };
 
-
-// TODO: 不是所有属性都需要传的
-// TODO: 想想如何渲染数据
 const uploadSurveyAnswer = throttle(async (data: surveyAnswerType) => {
   isSubmitting.value = true;
   try {
-    const res = await uploadAnswer(data.uuid, data.survey);
-
-    // TODO: 数据决定好，记得把我删除了
-    console.log('submitting', data);
+    const ans = data.survey.map((item) => {
+      // TODO: 决定查看时拥有的数据
+      return { answer: item.answer };
+    });
+    const res = await uploadAnswer(data.uuid, ans);
 
     if (res.ok) {
       ElMessage.success('问卷提交成功！');
@@ -119,8 +117,11 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="online-survey-container flex min-h-screen flex-col items-center px-4 py-10"
-    v-loading.fullscreen.lock="isSubmitting" element-loading-text="正在提交...">
+  <div
+    class="online-survey-container flex min-h-screen flex-col items-center px-4 py-10"
+    v-loading.fullscreen.lock="isSubmitting"
+    element-loading-text="正在提交..."
+  >
     <div class="mb-8 w-full max-w-2xl rounded-lg bg-white p-10 shadow-sm">
       <div v-if="submitted" class="py-20 text-center text-lg text-slate-600">
         感谢您的填写，问卷已提交
@@ -128,14 +129,15 @@ onMounted(async () => {
 
       <div v-else-if="!loading && surveyItems.length > 0" class="flex flex-col gap-6">
         <div v-for="item in surveyItems" :key="item?.id" class="relative p-2">
-          <component :is="componentMap[item?.type as string]" :data="item"
-            :question-index="questionIndices[item?.id as number]" />
+          <component
+            :is="componentMap[item?.type as string]"
+            :data="item"
+            :question-index="questionIndices[item?.id as number]"
+          />
         </div>
 
         <div class="flex justify-center pt-4">
-          <el-button type="primary" size="large" @click="submitSurvey">
-            提交问卷
-          </el-button>
+          <el-button type="primary" size="large" @click="submitSurvey"> 提交问卷 </el-button>
         </div>
       </div>
 

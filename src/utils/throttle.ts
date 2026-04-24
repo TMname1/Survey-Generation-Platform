@@ -1,7 +1,8 @@
 /**
  * 节流函数：在指定时间内多次触发，只执行一次
  * @param fn 需要节流的函数
- * @param delay 延迟时间（毫秒）
+ * @param delay 延迟时间（毫秒）,默认1000ms
+ * @returns 节流后的函数
  */
 export function throttle<A extends unknown[], R, T = unknown>(
   fn: (this: T, ...args: A) => R,

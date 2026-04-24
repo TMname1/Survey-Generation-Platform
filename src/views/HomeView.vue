@@ -9,6 +9,7 @@ import { useUserStore } from '@/stores/user';
 import { useDataStore } from '@/stores/survey.ts';
 import { deleteSurvey } from '@/apis/deleteSurvey.ts';
 import { throttle } from '@/utils/throttle.ts';
+import { getAnswer } from '@/apis/getAnswer.ts';
 
 const router = useRouter();
 const userStore = useUserStore();
@@ -97,6 +98,22 @@ const handleDeleteSurvey = throttle(async (item: tableDataType) => {
     });
   }
 });
+
+const handleCheckAnswer = throttle(async (item: tableDataType) => {
+  const res = await getAnswer(item.uuid);
+
+  // TODO: 查看页面完成后，把我删除了
+  console.log(res);
+
+  if (!res.ok) {
+    ElMessage({
+      message: '获取数据失败',
+      type: 'error',
+    });
+    return;
+  }
+  router.push('/data/' + item.uuid);
+});
 </script>
 
 <template>
@@ -123,17 +140,27 @@ const handleDeleteSurvey = throttle(async (item: tableDataType) => {
           <el-table-column label="操作" min-width="140">
             <template #default="scope">
               <div class="flex items-center gap-3">
-                <el-link type="primary" underline="never"
-                  @click="router.push('/preview/' + scope.row.uuid)">查看问卷</el-link>
-
-                <el-link type="warning" underline="never" @click="editSurveyHandle(scope.row)">编辑</el-link>
-                <el-link type="danger" underline="never" @click="handleDeleteSurvey(scope.row)">删除</el-link>
+                <el-link
+                  type="primary"
+                  underline="never"
+                  @click="router.push('/preview/' + scope.row.uuid)"
+                  >查看问卷</el-link
+                >
+                <!-- TODO: 编辑更新后，所有已经提交的数据要作废 -->
+                <el-link type="warning" underline="never" @click="editSurveyHandle(scope.row)"
+                  >编辑</el-link
+                >
+                <el-link type="danger" underline="never" @click="handleDeleteSurvey(scope.row)"
+                  >删除</el-link
+                >
               </div>
             </template>
           </el-table-column>
           <el-table-column label="提交数据">
             <template #default="scope">
-              <el-link type="success" underline="never" @click="router.push('/data/' + scope.row.uuid)">查看</el-link>
+              <el-link type="success" underline="never" @click="handleCheckAnswer(scope.row)"
+                >查看</el-link
+              >
             </template>
           </el-table-column>
         </el-table>
