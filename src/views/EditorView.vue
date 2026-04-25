@@ -43,6 +43,7 @@ import SizeSetting from '@/components/survey/editor/SizeSetting.vue';
 import TextStyle from '@/components/survey/editor/textStyle.vue';
 import TitleSetting from '@/components/survey/editor/TitleSetting.vue';
 import DescSetting from '@/components/survey/editor/DescSetting.vue';
+import { deleteAnswer } from '@/apis/deleteAnswer.ts';
 
 const activeComponent = shallowRef<unknown>(null);
 const activeComponentName = ref<string>('');
@@ -199,19 +200,47 @@ const handleUpdateSurvey = throttle(async () => {
 }, 1000);
 
 const handleChangeSurvey = throttle(async () => {
-  const username = localStorage.getItem('username') as string;
+  ElMessageBox.confirm('更新问卷会清空所有已经统计的数据，确定要继续吗？', '警告', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning',
+  })
+    .then(async () => {
+      const username = localStorage.getItem('username') as string;
 
-  // 保证uuid的对象是在最后的
-  dataStore.moveUuid();
+      // 保证uuid的对象是在最后的
+      dataStore.moveUuid();
 
-  dataStore.survey[dataStore.survey.length - 1]!.surveyTitle = surveyTitle.value;
-  dataStore.survey[dataStore.survey.length - 1]!.updateDate = new Date().toLocaleDateString(
-    'zh-CN',
-  );
+      dataStore.survey[dataStore.survey.length - 1]!.surveyTitle = surveyTitle.value;
+      dataStore.survey[dataStore.survey.length - 1]!.updateDate = new Date().toLocaleDateString(
+        'zh-CN',
+      );
 
-  const { msg } = await changeSurvey(username, dataStore.survey);
-  ElMessage.success(msg);
-}, 1000);
+      try {
+        const [{ msg }, res] = await Promise.all([
+          changeSurvey(username, dataStore.survey),
+          deleteAnswer(dataStore.survey[dataStore.survey.length - 1]!.uuid as string),
+        ]);
+        if (res && msg) {
+          ElMessage.success(msg);
+        } else {
+          ElMessage({
+            message: '更新数据失败',
+            type: 'error',
+          });
+        }
+      } catch (err) {
+        ElMessage({
+          message: '更新数据失败',
+          type: 'error',
+        });
+        console.error(err);
+      }
+    })
+    .catch(() => {
+      // 用户点击了取消，不做任何操作
+    });
+});
 
 const handleOutlineClick = (item: SurveyItem) => {
   if (activeStore.value !== item) {
@@ -233,21 +262,27 @@ const handleOutlineClick = (item: SurveyItem) => {
       <div class="flex h-full w-16 items-center justify-center border-r border-gray-300">
         <el-button class="h-10! w-10!" :icon="ArrowLeft" circle @click="router.push('/')" />
       </div>
-      <div>
+      <div class="flex items-center justify-center gap-6">
         <el-button v-if="!dataStore.isUpdate" type="success" @click="handleUpdateSurvey">{{
           '保存问卷'
-          }}</el-button>
+        }}</el-button>
         <el-button v-else type="success" @click="handleChangeSurvey">{{ '更新问卷' }}</el-button>
+        <div class="text-sm text-slate-500">
+          题目数量：{{ Object.keys(questionIndices).length }}
+        </div>
       </div>
     </div>
-    <div>
-      <div class="relative mr-6 inline-flex min-w-37.5 items-center justify-center text-lg font-bold">
+    <div class="absolute left-1/2 -translate-x-1/2">
+      <div class="relative inline-flex min-w-37.5 items-center justify-center text-lg font-bold">
         <!-- 镜像克隆元素，用于撑开宽度，invisible隐藏文字 -->
         <span class="invisible px-3 py-1">{{ surveyTitle || '未命名问卷' }}</span>
         <!-- 实际输入框 -->
-        <input v-model="surveyTitle"
+        <input
+          v-model="surveyTitle"
           class="absolute inset-0 h-full w-full rounded-lg border border-gray-300 bg-transparent text-center outline-none focus:border-blue-500"
-          placeholder="未命名问卷" maxlength="60" />
+          placeholder="未命名问卷"
+          maxlength="60"
+        />
       </div>
     </div>
     <div class="flex h-full items-center justify-center border-l border-gray-300 px-4">
@@ -258,15 +293,21 @@ const handleOutlineClick = (item: SurveyItem) => {
   <main class="flex h-[calc(100vh-4rem)] bg-gray-50 text-gray-800">
     <aside>
       <div class="flex w-16 flex-col items-center border-r border-gray-100 pt-5">
-        <div class="mb-6 flex cursor-pointer flex-col items-center justify-between text-center text-sm"
-          :class="activeLeftTab === '题型' ? 'text-blue-500' : 'text-gray-500'" @click="activeLeftTab = '题型'">
+        <div
+          class="mb-6 flex cursor-pointer flex-col items-center justify-between text-center text-sm"
+          :class="activeLeftTab === '题型' ? 'text-blue-500' : 'text-gray-500'"
+          @click="activeLeftTab = '题型'"
+        >
           <el-icon>
             <Folder />
           </el-icon>
           <div>题型</div>
         </div>
-        <div class="mb-6 flex cursor-pointer flex-col items-center justify-between text-center text-sm"
-          :class="activeLeftTab === '大纲' ? 'text-blue-500' : 'text-gray-500'" @click="activeLeftTab = '大纲'">
+        <div
+          class="mb-6 flex cursor-pointer flex-col items-center justify-between text-center text-sm"
+          :class="activeLeftTab === '大纲' ? 'text-blue-500' : 'text-gray-500'"
+          @click="activeLeftTab = '大纲'"
+        >
           <el-icon>
             <List />
           </el-icon>
@@ -280,7 +321,8 @@ const handleOutlineClick = (item: SurveyItem) => {
           <div class="mb-2.5 flex items-center text-sm font-bold">
             <el-icon class="mr-1">
               <CircleCheck />
-            </el-icon> 选择
+            </el-icon>
+            选择
           </div>
           <ButtonSelection :data="materialsStore.selectionBtnData" />
         </div>
@@ -288,7 +330,8 @@ const handleOutlineClick = (item: SurveyItem) => {
           <div class="mb-2.5 flex items-center text-sm font-bold">
             <el-icon class="mr-1">
               <EditPen />
-            </el-icon> 文本输入
+            </el-icon>
+            文本输入
           </div>
           <ButtonSelection :data="materialsStore.textInputBtnData" />
         </div>
@@ -297,7 +340,8 @@ const handleOutlineClick = (item: SurveyItem) => {
           <div class="mb-2.5 flex items-center text-sm font-bold">
             <el-icon class="mr-1">
               <MessageBox />
-            </el-icon> 高级题型
+            </el-icon>
+            高级题型
           </div>
           <ButtonSelection :data="materialsStore.advancedBtnData" />
         </div>
@@ -306,7 +350,8 @@ const handleOutlineClick = (item: SurveyItem) => {
           <div class="mb-2.5 flex items-center text-sm font-bold">
             <el-icon class="mr-1">
               <ChatLineSquare />
-            </el-icon> 备注说明
+            </el-icon>
+            备注说明
           </div>
           <ButtonSelection :data="materialsStore.remarkBtnData" />
         </div>
@@ -315,7 +360,8 @@ const handleOutlineClick = (item: SurveyItem) => {
           <div class="mb-2.5 flex items-center text-sm font-bold">
             <el-icon class="mr-1">
               <User />
-            </el-icon> 个人信息
+            </el-icon>
+            个人信息
           </div>
           <ButtonSelection :data="materialsStore.personalInfoBtnData" />
         </div>
@@ -323,7 +369,8 @@ const handleOutlineClick = (item: SurveyItem) => {
           <div class="mb-2.5 flex items-center text-sm font-bold">
             <el-icon class="mr-1">
               <Message />
-            </el-icon> 联系方式
+            </el-icon>
+            联系方式
           </div>
           <ButtonSelection :data="materialsStore.contactBtnData" />
         </div>
@@ -331,12 +378,17 @@ const handleOutlineClick = (item: SurveyItem) => {
 
       <template v-else>
         <div class="flex flex-col gap-2">
-          <div v-for="item in editorSurvey" :key="item?.id"
-            class="flex cursor-pointer items-center truncate rounded px-3 py-2 text-sm transition-colors" :class="[
+          <div
+            v-for="item in editorSurvey"
+            :key="item?.id"
+            class="flex cursor-pointer items-center truncate rounded px-3 py-2 text-sm transition-colors"
+            :class="[
               activeSurveyId === item?.id
                 ? 'bg-blue-100 font-medium text-blue-600'
                 : 'text-gray-700 hover:bg-gray-100',
-            ]" @click="handleOutlineClick(item as SurveyItem)">
+            ]"
+            @click="handleOutlineClick(item as SurveyItem)"
+          >
             <el-icon class="mr-2" v-if="iconMap[item?.type as string]">
               <component :is="iconMap[item?.type as string]" />
             </el-icon>
@@ -353,14 +405,21 @@ const handleOutlineClick = (item: SurveyItem) => {
     </aside>
 
     <!-- 中间预览区 -->
-    <section class="flex flex-1 flex-col items-center overflow-y-auto bg-linear-to-br from-blue-100 to-white p-10">
+    <section
+      class="flex flex-1 flex-col items-center overflow-y-auto bg-linear-to-br from-blue-100 to-white p-10"
+    >
       <div class="w-155 rounded bg-white p-10 text-center shadow-[0_4px_12px_rgba(0,0,0,0.05)]">
         <div class="flex flex-col" ref="draggableElement">
-          <div v-for="item in editorSurvey" :key="item?.id" :id="'survey-item-' + item?.id"
+          <div
+            v-for="item in editorSurvey"
+            :key="item?.id"
+            :id="'survey-item-' + item?.id"
             class="transition-shadow-scale relative cursor-pointer p-6 select-none hover:scale-102 hover:shadow-lg"
             :class="{
               'border-2 border-blue-400 shadow-lg': activeSurveyId === item?.id,
-            }" @click="setActiveSurvey(item as SurveyItem)">
+            }"
+            @click="setActiveSurvey(item as SurveyItem)"
+          >
             <div
               class="absolute -top-2.5 -right-2.5 flex h-5 w-5 cursor-pointer items-center justify-center rounded-2xl border bg-red-400 text-sm text-white hover:bg-red-300"
               @click.stop="
@@ -374,11 +433,16 @@ const handleOutlineClick = (item: SurveyItem) => {
                     activeStore = null;
                   })
                   .catch()
-                " v-show="activeSurveyId === item?.id">
+              "
+              v-show="activeSurveyId === item?.id"
+            >
               x
             </div>
-            <component :is="componentMap[item?.type as string]" :data="item"
-              :question-index="questionIndices[item?.id as number]" />
+            <component
+              :is="componentMap[item?.type as string]"
+              :data="item"
+              :question-index="questionIndices[item?.id as number]"
+            />
           </div>
         </div>
       </div>
@@ -386,10 +450,16 @@ const handleOutlineClick = (item: SurveyItem) => {
 
     <!-- 右侧编辑区 -->
     <aside class="flex w-70 flex-col overflow-y-auto border-l border-gray-300 bg-white p-4">
-      <div v-if="activeStore && activeStore.editComponents && activeStore.editComponents.length > 0"
-        class="flex flex-col gap-3">
+      <div
+        v-if="activeStore && activeStore.editComponents && activeStore.editComponents.length > 0"
+        class="flex flex-col gap-3"
+      >
         <h2 class="mb-4 text-lg font-bold">编辑面板</h2>
-        <component v-for="cmpName in activeStore.editComponents" :key="cmpName" :is="editComponentsMap[cmpName]" />
+        <component
+          v-for="cmpName in activeStore.editComponents"
+          :key="cmpName"
+          :is="editComponentsMap[cmpName]"
+        />
       </div>
       <div v-else class="flex h-full items-center justify-center text-sm text-gray-400">
         点击组件进行编辑

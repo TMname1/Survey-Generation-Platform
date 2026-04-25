@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Edit, Plus } from '@element-plus/icons-vue';
+import { ElMessage } from 'element-plus';
 import { useRouter } from 'vue-router';
 import LoginComponent from '@/components/LoginComponent.vue';
 import { getSurvey } from '@/apis/getSurvey.ts';
@@ -10,6 +11,7 @@ import { useDataStore } from '@/stores/survey.ts';
 import { deleteSurvey } from '@/apis/deleteSurvey.ts';
 import { throttle } from '@/utils/throttle.ts';
 import { getAnswer } from '@/apis/getAnswer.ts';
+import { deleteAnswer } from '@/apis/deleteAnswer.ts';
 
 const router = useRouter();
 const userStore = useUserStore();
@@ -23,6 +25,7 @@ type tableDataType = {
 };
 
 const tableData = ref();
+const loading = ref(true);
 const remarkTypes = ['备注标题', '备注段落'];
 const isSurveyQuestion = (item: databaseSurveyType[number]) =>
   'type' in item && !remarkTypes.includes(item.type);
@@ -33,22 +36,35 @@ const renderTableData = async () => {
 
   if (!username || !authorization) {
     tableData.value = [];
+    loading.value = false;
     return;
   }
 
-  const res = await getSurvey(username, authorization);
-  tableData.value = res.map((survey: databaseSurveyType) => {
-    const lastIdx = survey.length - 1;
-    const questionCount = survey.filter(isSurveyQuestion).length;
+  try {
+    loading.value = true;
+    const res = await getSurvey(username, authorization);
+    tableData.value = res.map((survey: databaseSurveyType) => {
+      const lastIdx = survey.length - 1;
+      const questionCount = survey.filter(isSurveyQuestion).length;
 
-    return {
-      createDate: survey[lastIdx]?.createDate,
-      title: survey[lastIdx]?.surveyTitle,
-      questionCount,
-      updateDate: survey[lastIdx]?.updateDate,
-      uuid: survey[lastIdx]?.uuid,
-    };
-  });
+      return {
+        createDate: survey[lastIdx]?.createDate,
+        title: survey[lastIdx]?.surveyTitle,
+        questionCount,
+        updateDate: survey[lastIdx]?.updateDate,
+        uuid: survey[lastIdx]?.uuid,
+      };
+    });
+  } catch (error) {
+    console.error('Failed to load survey data:', error);
+    ElMessage({
+      message: '加载问卷列表失败，请重试',
+      type: 'error',
+    });
+    tableData.value = [];
+  } finally {
+    loading.value = false;
+  }
 };
 
 onBeforeMount(renderTableData);
@@ -84,26 +100,35 @@ const createSurveyHandle = () => {
 };
 
 const handleDeleteSurvey = throttle(async (item: tableDataType) => {
-  const res = await deleteSurvey(localStorage.getItem('username') as string, item.uuid);
-  if (res) {
-    ElMessage({
-      message: '删除成功',
-      type: 'success',
-    });
-    renderTableData();
-  } else {
+  try {
+    const res = await Promise.all([
+      deleteSurvey(localStorage.getItem('username') as string, item.uuid),
+      deleteAnswer(item.uuid),
+    ]);
+
+    if (res) {
+      ElMessage({
+        message: '删除成功',
+        type: 'success',
+      });
+      renderTableData();
+    } else {
+      ElMessage({
+        message: '删除失败',
+        type: 'error',
+      });
+    }
+  } catch (err) {
     ElMessage({
       message: '删除失败',
       type: 'error',
     });
+    console.error(err);
   }
 });
 
 const handleCheckAnswer = throttle(async (item: tableDataType) => {
   const res = await getAnswer(item.uuid);
-
-  // TODO: 查看页面完成后，把我删除了
-  console.log(res);
 
   if (!res.ok) {
     ElMessage({
@@ -132,8 +157,7 @@ const handleCheckAnswer = throttle(async (item: tableDataType) => {
       </div>
 
       <div class="w-full overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-slate-200">
-        <!-- TODO: 加载时，显示loading的动画 -->
-        <el-table :data="tableData" class="w-full" border>
+        <el-table :data="tableData" v-loading="loading" class="w-full" border>
           <el-table-column prop="createDate" label="创建日期" min-width="140" />
           <el-table-column prop="title" label="问卷标题" min-width="220" />
           <el-table-column prop="questionCount" label="题目数" min-width="120" />
@@ -147,7 +171,6 @@ const handleCheckAnswer = throttle(async (item: tableDataType) => {
                   @click="router.push('/preview/' + scope.row.uuid)"
                   >查看问卷</el-link
                 >
-                <!-- TODO: 编辑更新后，所有已经提交的数据要作废 -->
                 <el-link type="warning" underline="never" @click="editSurveyHandle(scope.row)"
                   >编辑</el-link
                 >

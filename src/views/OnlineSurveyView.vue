@@ -60,11 +60,17 @@ export type surveyAnswerType = {
   survey: SurveyItem[];
 };
 
-const uploadSurveyAnswer = throttle(async (data: surveyAnswerType) => {
+const submitSurvey = throttle(async () => {
+  if (submitted.value) return;
+  const data: surveyAnswerType = {
+    surveyTitle: surveyTitle.value,
+    uuid: surveyUuid.value,
+    survey: surveyItems.value,
+  };
+
   isSubmitting.value = true;
   try {
     const ans = data.survey.map((item) => {
-      // TODO: 决定查看时拥有的数据
       return { answer: item.answer };
     });
     const res = await uploadAnswer(data.uuid, ans);
@@ -78,17 +84,7 @@ const uploadSurveyAnswer = throttle(async (data: surveyAnswerType) => {
   } finally {
     isSubmitting.value = false;
   }
-}, 1000);
-
-const submitSurvey = () => {
-  if (submitted.value) return;
-  const data: surveyAnswerType = {
-    surveyTitle: surveyTitle.value,
-    uuid: surveyUuid.value,
-    survey: surveyItems.value,
-  };
-  uploadSurveyAnswer(data);
-};
+});
 
 onMounted(async () => {
   const id = route.params.id as string;
