@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import MultipleChoice from '../../choice/MultipleChoice.vue';
+import MultipleChoice from '@/components/survey/choice/MultipleChoice.vue';
 
 const props = defineProps({
   data: {

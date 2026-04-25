@@ -5,28 +5,28 @@ import { ArrowLeft, Select, Edit, Setting, Document, User, Phone } from '@elemen
 import { useMaterialsStore } from '@/stores/materials.ts';
 
 // Import components
-import SingleChoice from '@/components/choice/SingleChoice.vue';
-import MultipleChoice from '@/components/choice/MultipleChoice.vue';
-import DropdownChoice from '@/components/choice/DropdownChoice.vue';
-import RateComponent from '@/components/advanced/RateComponent.vue';
-import DateComponent from '@/components/advanced/DateComponent.vue';
-import TextInput from '@/components/input/textInput.vue';
-import TitleComponent from '@/components/remarks/TitleComponent.vue';
-import ParagraphComponent from '@/components/remarks/ParagraphComponent.vue';
+import SingleChoice from '@/components/survey/choice/SingleChoice.vue';
+import MultipleChoice from '@/components/survey/choice/MultipleChoice.vue';
+import DropdownChoice from '@/components/survey/choice/DropdownChoice.vue';
+import RateComponent from '@/components/survey/advanced/RateComponent.vue';
+import DateComponent from '@/components/survey/advanced/DateComponent.vue';
+import TextInput from '@/components/survey/input/textInput.vue';
+import TitleComponent from '@/components/survey/remarks/TitleComponent.vue';
+import ParagraphComponent from '@/components/survey/remarks/ParagraphComponent.vue';
 import LoginComponent from '@/components/LoginComponent.vue';
 
 // Import materials components
-import BoldSetting from '@/components/editor/BoldSetting.vue';
-import CenterSetting from '@/components/editor/CenterSetting.vue';
-import ColorSetting from '@/components/editor/ColorSetting.vue';
-import ItalicSetting from '@/components/editor/ItalicSetting.vue';
-import RadioOption from '@/components/editor/RadioOption.vue';
-import SizeSetting from '@/components/editor/SizeSetting.vue';
-import TextStyle from '@/components/editor/textStyle.vue';
+import BoldSetting from '@/components/survey/editor/BoldSetting.vue';
+import CenterSetting from '@/components/survey/editor/CenterSetting.vue';
+import ColorSetting from '@/components/survey/editor/ColorSetting.vue';
+import ItalicSetting from '@/components/survey/editor/ItalicSetting.vue';
+import RadioOption from '@/components/survey/editor/RadioOption.vue';
+import SizeSetting from '@/components/survey/editor/SizeSetting.vue';
+import TextStyle from '@/components/survey/editor/textStyle.vue';
 
 // Local materials components
-import TitleSetting from '@/components/editor/TitleSetting.vue';
-import DescSetting from '@/components/editor/DescSetting.vue';
+import TitleSetting from '@/components/survey/editor/TitleSetting.vue';
+import DescSetting from '@/components/survey/editor/DescSetting.vue';
 
 const activeComponent = shallowRef<unknown>(null);
 const activeComponentName = ref<string>('');

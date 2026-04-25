@@ -6,14 +6,14 @@ import { throttle } from '@/utils/throttle';
 import type { SurveyItem } from '@/stores/survey';
 import type { databaseSurveyType } from '@/apis/updateSurvey';
 
-import SingleChoice from '@/components/choice/SingleChoice.vue';
-import MultipleChoice from '@/components/choice/MultipleChoice.vue';
-import DropdownChoice from '@/components/choice/DropdownChoice.vue';
-import RateComponent from '@/components/advanced/RateComponent.vue';
-import DateComponent from '@/components/advanced/DateComponent.vue';
-import TextInput from '@/components/input/textInput.vue';
-import TitleComponent from '@/components/remarks/TitleComponent.vue';
-import ParagraphComponent from '@/components/remarks/ParagraphComponent.vue';
+import SingleChoice from '@/components/survey/choice/SingleChoice.vue';
+import MultipleChoice from '@/components/survey/choice/MultipleChoice.vue';
+import DropdownChoice from '@/components/survey/choice/DropdownChoice.vue';
+import RateComponent from '@/components/survey/advanced/RateComponent.vue';
+import DateComponent from '@/components/survey/advanced/DateComponent.vue';
+import TextInput from '@/components/survey/input/textInput.vue';
+import TitleComponent from '@/components/survey/remarks/TitleComponent.vue';
+import ParagraphComponent from '@/components/survey/remarks/ParagraphComponent.vue';
 import { uploadAnswer } from '@/apis/uploadAnswer.ts';
 
 const route = useRoute();

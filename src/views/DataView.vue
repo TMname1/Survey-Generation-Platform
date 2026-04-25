@@ -15,11 +15,11 @@ import MultipleChoiceAnswer from '@/components/answer/choice/MultipleChoiceAnswe
 import DropdownChoiceAnswer from '@/components/answer/choice/DropdownChoiceAnswer.vue';
 
 // Import other components
-import RateComponent from '@/components/advanced/RateComponent.vue';
-import DateComponent from '@/components/advanced/DateComponent.vue';
-import TextInput from '@/components/input/textInput.vue';
-import TitleComponent from '@/components/remarks/TitleComponent.vue';
-import ParagraphComponent from '@/components/remarks/ParagraphComponent.vue';
+import RateComponent from '@/components/survey/advanced/RateComponent.vue';
+import DateComponent from '@/components/survey/advanced/DateComponent.vue';
+import TextInput from '@/components/survey/input/textInput.vue';
+import TitleComponent from '@/components/survey/remarks/TitleComponent.vue';
+import ParagraphComponent from '@/components/survey/remarks/ParagraphComponent.vue';
 
 const route = useRoute();
 const router = useRouter();
@@ -106,8 +106,6 @@ const questionIndices = computed(() => {
 const questionStatistics = computed(() => {
   return calculateAllQuestionStats(surveyAnswers.value, surveyItems.value);
 });
-
-
 </script>
 
 <template>
@@ -118,10 +116,7 @@ const questionStatistics = computed(() => {
         <el-button @click="router.back()">返回</el-button>
       </div>
       <div class="flex flex-col items-center">
-        <div class="text-xl font-bold text-slate-800">{{ surveyTitle }} - 数据收集</div>
-        <div class="mt-2 text-sm text-slate-600">
-          统计数据视图
-        </div>
+        <div class="text-xl font-bold text-slate-800">{{ surveyTitle }}</div>
       </div>
       <div class="text-sm text-slate-500">
         答卷数量：<span class="font-bold text-blue-600">{{ surveyAnswers.length }}</span> 份

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import DropdownChoice from '../../choice/DropdownChoice.vue';
+import DropdownChoice from '@/components/survey/choice/DropdownChoice.vue';
 
 const props = defineProps({
   data: {
@@ -36,8 +36,11 @@ const dataWithAnswer = computed(() => {
     </div>
 
     <!-- 显示统计数据（如果提供了统计数据） -->
-    <div v-if="statistics" class="mt-4 rounded-md border border-green-200 bg-green-50 p-3 text-sm text-green-800">
-      <div class="font-bold mb-2">统计数据：</div>
+    <div
+      v-if="statistics"
+      class="mt-4 rounded-md border border-green-200 bg-green-50 p-3 text-sm text-green-800"
+    >
+      <div class="mb-2 font-bold">统计数据：</div>
       <div v-for="(stat, option) in statistics" :key="option" class="mb-1 last:mb-0">
         <div class="flex items-center justify-between">
           <span class="font-medium">{{ option }}</span>
