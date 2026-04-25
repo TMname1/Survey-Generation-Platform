@@ -15,6 +15,10 @@ Frontend Vue 3 SPA built with Vite, TypeScript, Pinia, Vue Router, Tailwind CSS,
 │   ├── apis/      # API wrappers
 │   ├── assets/    # Static assets (base.css, svg)
 │   ├── components/ # Reusable UI components & editors
+│   │   ├── answer/ # Survey answer display components
+│   │   ├── survey/ # Main survey components (advanced, choice, editor, input, remarks)
+│   │   ├── ButtonSelection.vue # Component selection buttons
+│   │   └── LoginComponent.vue # User authentication component
 │   ├── router/    # Vue Router configuration
 │   ├── stores/    # Pinia state stores & factory stores
 │   ├── utils/     # Utility functions
@@ -38,9 +42,10 @@ Frontend Vue 3 SPA built with Vite, TypeScript, Pinia, Vue Router, Tailwind CSS,
   - Locations: src/stores/{choice,advanced,input,remarks}/create\*.ts.
   - Pattern: Functions returning reactive objects (
     efs) representing item state.
+  - **Component Mapping**: Store factories map to components in src/components/survey/{choice,advanced,input,remarks}/.
 - **Dynamic Component System**:
-  - Components in src/components/{choice,advanced,input,remarks}/ consume a data prop which is the reactive state from a factory.
-  - **Edit Panels**: Driven by an editComponents string array returned by each store factory. The UI maps these strings to components in src/components/editor/.
+  - Components in src/components/survey/{choice,advanced,input,remarks}/ consume a data prop which is the reactive state from a factory.
+  - **Edit Panels**: Driven by an editComponents string array returned by each store factory. The UI maps these strings to components in src/components/survey/editor/.
 - **State Injection**: Editor components (e.g., RadioOption.vue) use inject('activeStore') to access and mutate the currently selected item's state directly.
 - **Survey Data Structure (`databaseSurveyType`)**: A survey is represented as an array where all elements _except the last_ are survey components (`SurveyItem`), and the _final element_ is always the metadata (`surveyInfoType` containing `uuid`, `surveyTitle`, etc.).
 - **Component Classification**: Not all items in the survey array are questions. Remark types (e.g., `备注标题`, `备注段落`) are layout/informational components and must be excluded when calculating question counts.
@@ -49,7 +54,7 @@ Frontend Vue 3 SPA built with Vite, TypeScript, Pinia, Vue Router, Tailwind CSS,
 
 - **Bilingual Mapping**: UI state often uses Chinese strings (e.g., '左对齐', '加粗') which are mapped to CSS values in the view components.
 - **Strict Prop Naming**: Survey components almost exclusively use a single data prop for their state.
-- **Pathing**: Deep modules follow a mirrored structure: src/stores/xyz/createX.ts <-> src/components/xyz/X.vue.
+- **Pathing**: Deep modules follow a mirrored structure: src/stores/xyz/createX.ts <-> src/components/survey/xyz/X.vue.
 - **Linting & Formatting**:
   - Formatting is exclusively handled by Prettier (.prettierrc.json) and .editorconfig.
   - Linting uses a flat ESLint config (eslint.config.ts) integrating Vue/TS rules and Oxlint (.oxlintrc.json).

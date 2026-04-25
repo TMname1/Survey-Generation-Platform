@@ -2,15 +2,19 @@
 import { ref, onMounted, computed, provide } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { getSurvey } from '@/apis/getSurvey';
+import { getAnswer } from '@/apis/getAnswer';
 import { ElMessage } from 'element-plus';
 import { Loading } from '@element-plus/icons-vue';
 import type { SurveyItem } from '@/stores/survey';
 import type { databaseSurveyType } from '@/apis/updateSurvey';
+import { calculateAllQuestionStats } from '@/utils/statistics';
 
-// Import components
-import SingleChoice from '@/components/survey/choice/SingleChoice.vue';
-import MultipleChoice from '@/components/survey/choice/MultipleChoice.vue';
-import DropdownChoice from '@/components/survey/choice/DropdownChoice.vue';
+// Import answer components
+import SingleChoiceAnswer from '@/components/answer/choice/SingleChoiceAnswer.vue';
+import MultipleChoiceAnswer from '@/components/answer/choice/MultipleChoiceAnswer.vue';
+import DropdownChoiceAnswer from '@/components/answer/choice/DropdownChoiceAnswer.vue';
+
+// Import other components
 import RateComponent from '@/components/survey/advanced/RateComponent.vue';
 import DateComponent from '@/components/survey/advanced/DateComponent.vue';
 import TextInput from '@/components/survey/input/textInput.vue';
@@ -21,9 +25,9 @@ const route = useRoute();
 const router = useRouter();
 
 const componentMap: Record<string, unknown> = {
-  单选题: SingleChoice,
-  多选题: MultipleChoice,
-  下拉选择题: DropdownChoice,
+  单选题: SingleChoiceAnswer,
+  多选题: MultipleChoiceAnswer,
+  下拉选择题: DropdownChoiceAnswer,
   评价: RateComponent,
   日期: DateComponent,
   文本输入: TextInput,
@@ -37,25 +41,22 @@ provide('componentMap', componentMap);
 const surveyTitle = ref('');
 const surveyItems = ref<SurveyItem[]>([]);
 const loading = ref(true);
-const shareLink = `${window.location.origin}/online/${route.params.id}`;
-
-const copyShareLink = async () => {
-  await navigator.clipboard.writeText(shareLink);
-  ElMessage.success('链接已复制到剪贴板，快去分享吧！');
-};
+const surveyAnswers = ref<unknown[][]>([]);
 
 onMounted(async () => {
   const username = localStorage.getItem('username') as string;
   const token = localStorage.getItem('token') as string;
+  const id = route.params.id as string;
 
   if (!username || !token) {
+    ElMessage.error('请先登录');
     loading.value = false;
     return;
   }
 
   try {
+    // 1. Fetch survey structure
     const res: databaseSurveyType[] = await getSurvey(username, token);
-    const id = route.params.id as string;
 
     const surveyData = res.find((s: databaseSurveyType) => {
       const lastItem = s[s.length - 1] as Record<string, unknown>;
@@ -65,11 +66,20 @@ onMounted(async () => {
     if (surveyData) {
       const lastItem = surveyData[surveyData.length - 1] as Record<string, unknown>;
       surveyTitle.value = (lastItem.surveyTitle as string) || '';
-
       surveyItems.value = surveyData.slice(0, surveyData.length - 1) as SurveyItem[];
+    } else {
+      ElMessage.error('找不到对应的问卷');
+    }
+
+    // 2. Fetch answers
+    const answerRes = await getAnswer(id);
+
+    if (answerRes && answerRes.ok && answerRes.data.survey) {
+      surveyAnswers.value = answerRes.data.survey;
     }
   } catch (error) {
-    console.error('Failed to load survey:', error);
+    console.error('Failed to load survey or answers:', error);
+    ElMessage.error('加载问卷数据失败');
   } finally {
     loading.value = false;
   }
@@ -91,26 +101,39 @@ const questionIndices = computed(() => {
 
   return indices;
 });
+
+// 计算所有问题的统计数据
+const questionStatistics = computed(() => {
+  return calculateAllQuestionStats(surveyAnswers.value, surveyItems.value);
+});
 </script>
 
 <template>
-  <div class="preview-container flex min-h-screen flex-col items-center px-4 py-10">
+  <div class="data-view-container flex min-h-screen flex-col items-center px-4 py-10">
     <!-- Top Bar -->
-    <div class="no-print mb-6 flex w-full max-w-4xl items-center justify-between">
+    <div class="mb-6 flex w-full max-w-4xl items-center justify-between">
       <div class="flex gap-3">
         <el-button @click="router.back()">返回</el-button>
-        <el-button type="success" @click="copyShareLink">分享在线问卷</el-button>
-        <!-- <el-button type="warning" @click="generatePdf">生成本地PDF</el-button> -->
       </div>
-      <div class="text-sm text-slate-500">题目数量：{{ Object.keys(questionIndices).length }}</div>
+      <div class="flex flex-col items-center">
+        <div class="text-xl font-bold text-slate-800">{{ surveyTitle }}</div>
+      </div>
+      <div class="text-sm text-slate-500">
+        答卷数量：<span class="font-bold text-blue-600">{{ surveyAnswers.length }}</span> 份
+      </div>
     </div>
 
     <!-- Survey Container -->
-    <div class="print-area mb-8 w-full max-w-2xl overflow-hidden rounded-lg bg-white p-10 pb-16 shadow-sm">
-      <div v-if="!loading && surveyItems.length > 0" class="flex flex-col gap-6">
-        <div v-for="item in surveyItems" :key="item?.id" class="relative p-2">
-          <component :is="componentMap[item?.type as string]" :data="item"
-            :question-index="questionIndices[item?.id as number]" />
+    <div class="w-full max-w-2xl overflow-hidden rounded-lg bg-white p-10 pb-16 shadow-sm">
+      <div v-if="!loading && surveyAnswers.length > 0" class="flex flex-col gap-6">
+        <!-- Survey Items -->
+        <div v-for="(item, index) in surveyItems" :key="item?.id" class="relative p-2">
+          <component
+            :is="componentMap[item?.type as string]"
+            :data="item"
+            :question-index="questionIndices[item?.id as number]"
+            :statistics="questionStatistics[index]"
+          />
         </div>
       </div>
 
@@ -119,18 +142,20 @@ const questionIndices = computed(() => {
         <el-icon class="is-loading text-primary text-3xl">
           <Loading />
         </el-icon>
-        <span class="ml-3 text-slate-500">正在加载问卷内容...</span>
+        <span class="ml-3 text-slate-500">正在加载数据...</span>
       </div>
 
       <!-- Empty State -->
-      <div v-else class="p-20 text-center text-slate-500">暂无问卷内容</div>
+      <div v-else class="p-20 text-center text-slate-500">
+        <el-empty description="暂无用户提交的答卷" />
+      </div>
     </div>
   </div>
 </template>
 
 <style scoped>
-.preview-container {
-  background-image: url('@/assets/preview_background.png');
+.data-view-container {
+  background-color: #f3f4f6;
   background-size: cover;
   background-position: center;
   background-attachment: fixed;

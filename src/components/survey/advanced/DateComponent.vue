@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, ref } from 'vue';
+import { computed } from 'vue';
 
 const props = defineProps({
   data: {
@@ -37,8 +37,6 @@ const descStyle = computed(() => ({
   fontStyle: store.descItalic === '斜体' ? 'italic' : 'normal',
   color: store.descColor,
 }));
-
-const inputVal = ref('');
 </script>
 
 <template>
@@ -48,19 +46,6 @@ const inputVal = ref('');
       {{ store.title }}
     </h1>
     <p class="mb-5" :style="descStyle">{{ store.desc }}</p>
-    <el-input
-      v-if="store.style === '单行文本'"
-      v-model="store.answer"
-      placeholder="请输入单行文本"
-      clearable
-    />
-    <el-input
-      v-else
-      v-model="store.answer"
-      type="textarea"
-      :rows="4"
-      placeholder="请输入多行文本"
-      clearable
-    />
+    <el-date-picker v-model="store.answer" type="date" placeholder="选择日期" />
   </div>
 </template>

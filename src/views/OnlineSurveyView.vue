@@ -6,14 +6,14 @@ import { throttle } from '@/utils/throttle';
 import type { SurveyItem } from '@/stores/survey';
 import type { databaseSurveyType } from '@/apis/updateSurvey';
 
-import SingleChoice from '@/components/choice/SingleChoice.vue';
-import MultipleChoice from '@/components/choice/MultipleChoice.vue';
-import DropdownChoice from '@/components/choice/DropdownChoice.vue';
-import RateComponent from '@/components/advanced/RateComponent.vue';
-import DateComponent from '@/components/advanced/DateComponent.vue';
-import TextInput from '@/components/input/textInput.vue';
-import TitleComponent from '@/components/remarks/TitleComponent.vue';
-import ParagraphComponent from '@/components/remarks/ParagraphComponent.vue';
+import SingleChoice from '@/components/survey/choice/SingleChoice.vue';
+import MultipleChoice from '@/components/survey/choice/MultipleChoice.vue';
+import DropdownChoice from '@/components/survey/choice/DropdownChoice.vue';
+import RateComponent from '@/components/survey/advanced/RateComponent.vue';
+import DateComponent from '@/components/survey/advanced/DateComponent.vue';
+import TextInput from '@/components/survey/input/textInput.vue';
+import TitleComponent from '@/components/survey/remarks/TitleComponent.vue';
+import ParagraphComponent from '@/components/survey/remarks/ParagraphComponent.vue';
 import { uploadAnswer } from '@/apis/uploadAnswer.ts';
 
 const route = useRoute();
@@ -60,11 +60,17 @@ export type surveyAnswerType = {
   survey: SurveyItem[];
 };
 
-const uploadSurveyAnswer = throttle(async (data: surveyAnswerType) => {
+const submitSurvey = throttle(async () => {
+  if (submitted.value) return;
+  const data: surveyAnswerType = {
+    surveyTitle: surveyTitle.value,
+    uuid: surveyUuid.value,
+    survey: surveyItems.value,
+  };
+
   isSubmitting.value = true;
   try {
     const ans = data.survey.map((item) => {
-      // TODO: 决定查看时拥有的数据
       return { answer: item.answer };
     });
     const res = await uploadAnswer(data.uuid, ans);
@@ -78,17 +84,7 @@ const uploadSurveyAnswer = throttle(async (data: surveyAnswerType) => {
   } finally {
     isSubmitting.value = false;
   }
-}, 1000);
-
-const submitSurvey = () => {
-  if (submitted.value) return;
-  const data: surveyAnswerType = {
-    surveyTitle: surveyTitle.value,
-    uuid: surveyUuid.value,
-    survey: surveyItems.value,
-  };
-  uploadSurveyAnswer(data);
-};
+});
 
 onMounted(async () => {
   const id = route.params.id as string;

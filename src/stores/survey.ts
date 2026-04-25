@@ -151,7 +151,7 @@ export const useDataStore = defineStore('data', () => {
   // 初始化问卷标题和说明
   const initSurvey = () => {
     survey.value = [];
-    addSurvey(createRemarkTitleStore, '备注说明');
+    addSurvey(() => createRemarkTitleStore('问卷标题'), '备注说明');
     setTimeout(() => {
       addSurvey(
         () =>

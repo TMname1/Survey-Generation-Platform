@@ -1,6 +1,6 @@
 import { ref } from 'vue';
 
-export const createRemarkTitleStore = () => {
+export const createRemarkTitleStore = (titleVal: string = '备注标题') => {
   const editComponents = ref([
     'TitleSetting',
     'CenterSetting',
@@ -12,7 +12,7 @@ export const createRemarkTitleStore = () => {
   const type = ref('备注标题');
   const hasTitleSize = ref(true);
   const hasDescSize = ref(false);
-  const title = ref('问卷标题');
+  const title = ref(titleVal);
 
   const position = ref<'左对齐' | '居中对齐'>('居中对齐');
   const titleSize = ref<26 | 24 | 22>(26);
