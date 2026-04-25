@@ -7,11 +7,12 @@ import { ElMessage } from 'element-plus';
 import { Loading } from '@element-plus/icons-vue';
 import type { SurveyItem } from '@/stores/survey';
 import type { databaseSurveyType } from '@/apis/updateSurvey';
+import { calculateAllQuestionStats } from '@/utils/statistics';
 
 // Import answer components
-import SingleChoiceAnswer from '@/components/answer/SingleChoiceAnswer.vue';
-import MultipleChoiceAnswer from '@/components/answer/MultipleChoiceAnswer.vue';
-import DropdownChoiceAnswer from '@/components/answer/DropdownChoiceAnswer.vue';
+import SingleChoiceAnswer from '@/components/answer/choice/SingleChoiceAnswer.vue';
+import MultipleChoiceAnswer from '@/components/answer/choice/MultipleChoiceAnswer.vue';
+import DropdownChoiceAnswer from '@/components/answer/choice/DropdownChoiceAnswer.vue';
 
 // Import other components
 import RateComponent from '@/components/advanced/RateComponent.vue';
@@ -41,7 +42,6 @@ const surveyTitle = ref('');
 const surveyItems = ref<SurveyItem[]>([]);
 const loading = ref(true);
 const surveyAnswers = ref<unknown[][]>([]);
-const currentRespondentIndex = ref(0);
 
 onMounted(async () => {
   const username = localStorage.getItem('username') as string;
@@ -73,8 +73,9 @@ onMounted(async () => {
 
     // 2. Fetch answers
     const answerRes = await getAnswer(id);
-    if (answerRes && answerRes.ok && answerRes.survey) {
-      surveyAnswers.value = answerRes.survey;
+
+    if (answerRes && answerRes.ok && answerRes.data.survey) {
+      surveyAnswers.value = answerRes.data.survey;
     }
   } catch (error) {
     console.error('Failed to load survey or answers:', error);
@@ -101,29 +102,12 @@ const questionIndices = computed(() => {
   return indices;
 });
 
-const currentAnswers = computed(() => {
-  if (surveyAnswers.value.length === 0) return [];
-  return surveyAnswers.value[currentRespondentIndex.value] || [];
+// 计算所有问题的统计数据
+const questionStatistics = computed(() => {
+  return calculateAllQuestionStats(surveyAnswers.value, surveyItems.value);
 });
 
-const getAnswerForItem = (index: number) => {
-  // 假设 currentAnswers 数组的顺序和 surveyItems (刨去备注组件？或者包含所有组件) 对应
-  // 在 uploadAnswer 时，保存了整个 surveyItems 数组的 answer。
-  const ans = currentAnswers.value[index] as { answer?: unknown };
-  return ans ? ans.answer : null;
-};
 
-const prevRespondent = () => {
-  if (currentRespondentIndex.value > 0) {
-    currentRespondentIndex.value--;
-  }
-};
-
-const nextRespondent = () => {
-  if (currentRespondentIndex.value < surveyAnswers.value.length - 1) {
-    currentRespondentIndex.value++;
-  }
-};
 </script>
 
 <template>
@@ -133,7 +117,12 @@ const nextRespondent = () => {
       <div class="flex gap-3">
         <el-button @click="router.back()">返回</el-button>
       </div>
-      <div class="text-xl font-bold text-slate-800">{{ surveyTitle }} - 数据收集</div>
+      <div class="flex flex-col items-center">
+        <div class="text-xl font-bold text-slate-800">{{ surveyTitle }} - 数据收集</div>
+        <div class="mt-2 text-sm text-slate-600">
+          统计数据视图
+        </div>
+      </div>
       <div class="text-sm text-slate-500">
         答卷数量：<span class="font-bold text-blue-600">{{ surveyAnswers.length }}</span> 份
       </div>
@@ -142,40 +131,13 @@ const nextRespondent = () => {
     <!-- Survey Container -->
     <div class="w-full max-w-2xl overflow-hidden rounded-lg bg-white p-10 pb-16 shadow-sm">
       <div v-if="!loading && surveyAnswers.length > 0" class="flex flex-col gap-6">
-        <!-- Pagination Controls -->
-        <div
-          class="flex items-center justify-between rounded-md border border-slate-200 bg-slate-50 p-4"
-        >
-          <el-button
-            :disabled="currentRespondentIndex === 0"
-            @click="prevRespondent"
-            type="primary"
-            plain
-          >
-            上一份
-          </el-button>
-          <span class="font-medium text-slate-700">
-            当前第 {{ currentRespondentIndex + 1 }} 份 / 共 {{ surveyAnswers.length }} 份
-          </span>
-          <el-button
-            :disabled="currentRespondentIndex === surveyAnswers.length - 1"
-            @click="nextRespondent"
-            type="primary"
-            plain
-          >
-            下一份
-          </el-button>
-        </div>
-
-        <el-divider border-style="dashed" />
-
+        <!-- Survey Items -->
         <div v-for="(item, index) in surveyItems" :key="item?.id" class="relative p-2">
-          <!-- Only inject 'answer' prop to our wrapper components, others might ignore it or we use pointer-events-none -->
           <component
             :is="componentMap[item?.type as string]"
             :data="item"
-            :answer="getAnswerForItem(index)"
             :question-index="questionIndices[item?.id as number]"
+            :statistics="questionStatistics[index]"
           />
         </div>
       </div>

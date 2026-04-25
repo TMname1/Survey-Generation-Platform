@@ -132,6 +132,7 @@ const handleCheckAnswer = throttle(async (item: tableDataType) => {
       </div>
 
       <div class="w-full overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-slate-200">
+        <!-- TODO: 加载时，显示loading的动画 -->
         <el-table :data="tableData" class="w-full" border>
           <el-table-column prop="createDate" label="创建日期" min-width="140" />
           <el-table-column prop="title" label="问卷标题" min-width="220" />
